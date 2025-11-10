@@ -22,16 +22,31 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $role = random_int(1, 2) === 2 ? 'buyer' : 'dealer';
         return [
-            'name' => fake()->name(),
+            'username' => fake()->unique()->userName(),
+            'first_name' => fake()->firstName(),
+            'last_name' => fake()->lastName(),
             'email' => fake()->unique()->safeEmail(),
+            'phone' => fake()->phoneNumber(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= 'admin',
+            'password' => static::$password ??= 'password',
             'remember_token' => Str::random(10),
+            'role' => $role,
+            'is_dealer' => $role === 'dealer',
             'two_factor_secret' => Str::random(10),
             'two_factor_recovery_codes' => Str::random(10),
             'two_factor_confirmed_at' => now(),
         ];
+    }
+
+    public function dealer(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'dealer',
+            'is_dealer' => true,
+            'company_name' => fake()->company(),
+        ]);
     }
 
     /**

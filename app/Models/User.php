@@ -20,10 +20,20 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'username',
+        'first_name',
+        'last_name',
         'email',
+        'phone',
         'password',
+        'email_verified_at',
+        'avatar',
+        'role',
+        'is_dealer',
+        'company_name',
+        'address'
     ];
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -47,7 +57,15 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_dealer' => 'boolean',
         ];
+    }
+
+
+    // Accessor
+    public function getNameAttribute(): string
+    {
+        return $this->first_name . ' ' . $this->last_name;
     }
 
     /**
@@ -58,7 +76,34 @@ class User extends Authenticatable
         return Str::of($this->name)
             ->explode(' ')
             ->take(2)
-            ->map(fn ($word) => Str::substr($word, 0, 1))
+            ->map(fn($word) => Str::substr($word, 0, 1))
             ->implode('');
     }
+
+    // Relationships
+    public function cars()
+    {
+        return $this->hasMany(Car::class, 'owner_id');
+    }
+
+    public function favorites()
+    {
+        return $this->belongsToMany(Car::class, 'user_favorites');
+    }
+
+    public function inquiries()
+    {
+        return $this->hasMany(CarInquiry::class);
+    }
+
+    public function reviewsGiven()
+    {
+        return $this->hasMany(Review::class, 'reviewer_id');
+    }
+
+    public function reviewsReceived()
+    {
+        return $this->hasMany(Review::class, 'seller_id');
+    }
+
 }
