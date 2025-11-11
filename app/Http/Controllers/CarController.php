@@ -36,7 +36,7 @@ class CarController extends Controller
      */
     public function index()
     {
-        //
+        return view('home');
     }
 
     /**
@@ -44,7 +44,7 @@ class CarController extends Controller
      */
     public function create()
     {
-        //
+        return view('car_template.add_new_car');
     }
 
     /**
