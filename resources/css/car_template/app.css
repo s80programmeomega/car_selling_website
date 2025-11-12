@@ -658,7 +658,9 @@ main {
 
 .hero-slider {
   background-color: #fff;
+  margin-top: -1rem; /* Remove space from main padding */
 }
+
 
 .hero-slider-title {
   font-size: 54px;
@@ -1423,6 +1425,25 @@ a.pagination-item:hover {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+.error {
+    color: #e3342f;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+    border-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
 
 @media screen and (max-width: 480px) {
   .find-a-car-inputs > div {

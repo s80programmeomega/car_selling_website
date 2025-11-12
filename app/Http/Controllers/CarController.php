@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCarRequest;
 use App\Http\Requests\UpdateCarRequest;
 use App\Models\Car;
+use App\Models\Feature;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class CarController extends Controller
 {
@@ -36,7 +40,16 @@ class CarController extends Controller
      */
     public function index()
     {
-        return view('home');
+        // $latest_cars = Car::with(['maker', 'model', 'carType', 'fuelType', 'city', 'images'])
+        // ->latest()
+        // ->take(9)
+        // ->get();
+        $latest_cars = Car::where('published', true)
+            ->latest()
+            ->take(9)
+            ->get();
+        $latest_cars->withRelationshipAutoloading();
+        return view('car_template.home', compact('latest_cars'));
     }
 
     /**
@@ -60,7 +73,18 @@ class CarController extends Controller
      */
     public function show(Car $car)
     {
-        //
+        // Load all relationships
+        // $car->load(['maker', 'model', 'carType', 'fuelType', 'state', 'city', 'images', 'features', 'owner']);
+
+
+        // Get all features with car's features marked
+        $allFeatures = Feature::all();
+        $carFeatureIds = $car->features->pluck('id')->toArray();
+
+        // Increment view count
+        $car->incrementViews();
+
+        return view('car_template.car_details', compact('car', 'allFeatures', 'carFeatureIds'));
     }
 
     /**
@@ -68,8 +92,9 @@ class CarController extends Controller
      */
     public function edit(Car $car)
     {
-        //
+        return view('car_template.edit_car', compact('car'));
     }
+
 
     /**
      * Update the specified resource in storage.
@@ -84,6 +109,27 @@ class CarController extends Controller
      */
     public function destroy(Car $car)
     {
-        //
+        try {
+            DB::beginTransaction();
+
+            // Delete all images from storage
+            foreach ($car->images as $image) {
+                Storage::disk('public')->delete($image->image_path);
+            }
+
+            // Delete car (cascade will delete images and relationships)
+            $car->delete();
+
+            DB::commit();
+
+            session()->flash('message', 'Car deleted successfully.');
+            return redirect()->route('car.index');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Failed to delete car: ' . $e->getMessage());
+            session()->flash('error', 'Failed to delete car.');
+            return back();
+        }
     }
+
 }

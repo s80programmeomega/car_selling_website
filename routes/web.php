@@ -5,12 +5,11 @@ use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\TwoFactor;
+use App\Models\Car;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
@@ -35,6 +34,12 @@ Route::middleware(['auth'])->group(function () {
         ->name('two-factor.show');
 });
 
+Route::resource('/', CarController::class)->only('index');
 
 Route::resource('car', CarController::class);
+
+Route::get('/car/{car}/images', function (Car $car) {
+    return view('car_template.car_images', compact('car'));
+})->name('car.images')->middleware('auth');
+
 
