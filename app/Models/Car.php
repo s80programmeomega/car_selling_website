@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
 use Yajra\Auditable\AuditableTrait;
 
 class Car extends Model
@@ -11,6 +13,7 @@ class Car extends Model
     /** @use HasFactory<\Database\Factories\CarFactory> */
     use HasFactory;
     use AuditableTrait;
+    use Searchable;
 
     protected $fillable = [
         'owner_id', 'maker_id', 'model_id', 'car_type_id', 'fuel_type_id',
@@ -90,19 +93,18 @@ class Car extends Model
         return $this->hasMany(Review::class);
     }
 
-
     // Scopes
-    public function scopePublished($query)
+    public function scopePublished(Builder $query)
     {
         return $query->where('published', true);
     }
 
-    public function scopeFeatured($query)
+    public function scopeFeatured(Builder $query)
     {
         return $query->where('featured', true);
     }
 
-    public function scopeAvailable($query)
+    public function scopeAvailable(Builder $query)
     {
         return $query->where('status', 'available');
     }
@@ -111,5 +113,54 @@ class Car extends Model
     public function incrementViews()
     {
         $this->increment('view_count');
+    }
+
+    /**
+     * Get the indexable data array for the model.
+     * This defines what data gets sent to Typesense
+     */
+    public function toSearchableArray()
+    {
+        return [
+            'id' => (string) $this->id,
+            'maker' => $this->maker?->name ?? '',
+            'model' => $this->model?->name ?? '',
+            'year' => (int) $this->year,
+            'price' => (float) $this->price,
+            'mileage' => (int) $this->mileage,
+            'description' => $this->description ?? '',
+            'transmission' => $this->transmission ?? '',
+            'color' => $this->color ?? '',
+            'fuel_type' => $this->fuelType?->name ?? '',
+            'car_type' => $this->carType?->name ?? '',
+            'city' => $this->city?->name ?? '',
+            'state' => $this->state?->name ?? '',
+            'published' => $this->published,
+            'featured' => $this->featured,
+            'condition' => $this->condition ?? '',
+        ];
+    }
+
+    /**
+     * Modify the query used to retrieve models when making all searchable.
+     * Only index published cars
+     */
+    public function makeAllSearchableUsing(Builder $query)
+    {
+        return $query->with(['maker', 'model', 'fuelType', 'carType', 'city', 'state']);
+    }
+
+    /**
+     * Determine if the model should be searchable.
+     * Only published cars should be in the search index
+     */
+    public function shouldBeSearchable()
+    {
+        return $this->published === true;
+    }
+
+    public static function searchCount($query = '')
+    {
+        return static::search($query)->raw()['found'] ?? 0;
     }
 }

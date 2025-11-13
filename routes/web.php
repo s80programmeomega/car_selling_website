@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\CarController;
+use App\Livewire\Car\OldSearchCars;
+use App\Livewire\Car\SearchCars;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
@@ -8,8 +10,6 @@ use App\Livewire\Settings\TwoFactor;
 use App\Models\Car;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
-
-
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
@@ -25,8 +25,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/two-factor', TwoFactor::class)
         ->middleware(
             when(
-                Features::canManageTwoFactorAuthentication()
-                    && Features::optionEnabled(Features::twoFactorAuthentication(), 'confirmPassword'),
+                Features::canManageTwoFactorAuthentication() &&
+                    Features::optionEnabled(Features::twoFactorAuthentication(), 'confirmPassword'),
                 ['password.confirm'],
                 [],
             ),
@@ -36,10 +36,12 @@ Route::middleware(['auth'])->group(function () {
 
 Route::resource('/', CarController::class)->only('index');
 
+Route::get('/car/search', [CarController::class, 'search'])->name('car.search');
+
 Route::resource('car', CarController::class);
 
 Route::get('/car/{car}/images', function (Car $car) {
     return view('car_template.car_images', compact('car'));
 })->name('car.images')->middleware('auth');
 
-
+Route::get('dashboard/car/search', OldSearchCars::class)->name('car.oldsearch');

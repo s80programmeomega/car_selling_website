@@ -1444,6 +1444,22 @@ a.pagination-item:hover {
     border-color: #bd2130;
 }
 
+/* Add CSS for animations */
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    .animate-spin {
+        animation: spin 1s linear infinite;
+    }
+    .opacity-50 {
+        opacity: 0.5;
+    }
+    .opacity-25 {
+        opacity: 0.25;
+    }
+    .opacity-75 {
+        opacity: 0.75;
+    }
 
 @media screen and (max-width: 480px) {
   .find-a-car-inputs > div {
