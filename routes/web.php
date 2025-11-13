@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CarController;
+use App\Livewire\Car\MyFavorites;
 use App\Livewire\Car\OldSearchCars;
 use App\Livewire\Car\SearchCars;
 use App\Livewire\Settings\Appearance;
@@ -45,3 +46,13 @@ Route::get('/car/{car}/images', function (Car $car) {
 })->name('car.images')->middleware('auth');
 
 Route::get('dashboard/car/search', OldSearchCars::class)->name('car.oldsearch');
+
+Route::get('/favorites', function () {
+    return view('car_template.favorite_cars');
+})->middleware('auth')->name('favorites');
+
+
+// Route::get('/favorites', [CarController::class, 'favorites'])
+//     ->middleware('auth')
+//     ->name('favorites');
+

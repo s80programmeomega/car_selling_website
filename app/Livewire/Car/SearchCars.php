@@ -56,6 +56,22 @@ class SearchCars extends Component
     #[Url]
     public $sort_by = 'year';
 
+    public function mount()
+    {
+        // Initialize from URL parameters
+        $this->maker_id = request('maker_id', '');
+        $this->model_id = request('model_id', '');
+        $this->state_id = request('state_id', '');
+        $this->city_id = request('city_id', '');
+        $this->car_type_id = request('car_type_id', '');
+        $this->year_from = request('year_from', '');
+        $this->year_to = request('year_to', '');
+        $this->price_from = request('price_from', '');
+        $this->price_to = request('price_to', '');
+        $this->fuel_type_id = request('fuel_type_id', '');
+    }
+
+
     public function updatingSearch()
     {
         $this->resetPage();
@@ -161,7 +177,7 @@ class SearchCars extends Component
 
         $query->orderBy($this->sort_by, 'desc');
 
-        $cars = $query->paginate(15);
+        $cars = $query->paginate(5);
         // $cars->load(['maker', 'model', 'carType', 'fuelType', 'images', 'state', 'city']);
 
         // Get dynamic models based on selected maker

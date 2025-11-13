@@ -5,20 +5,20 @@
 @section('content')
 <div class="container">
     <h1 class="car-details-page-title">{{ $car->maker->name }} {{ $car->model->name }} - {{ $car->year }}</h1>
-    <div class="car-details-region">{{ $car->city->name }}, {{ $car->state->name }} - {{ $car->created_at->diffForHumans() }}</div>
+    <div class="car-details-region">{{ $car->city->name }}, {{ $car->state->name }} - {{
+        $car->created_at->diffForHumans() }}</div>
 
     @auth
-        @if(auth()->id() === $car->owner_id)
-            <div class="flex gap-1 my-medium">
-                <a href="{{ route('car.edit', $car) }}" class="btn btn-primary">Edit Car</a>
-                <a href="{{ route('car.images', $car) }}" class="btn btn-default">Manage Images</a>
-                <form action="{{ route('car.destroy', $car) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this car?');" style="display: inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">Delete Car</button>
-                </form>
-            </div>
-        @endif
+    <div class="flex gap-1 my-medium">
+        <a href="{{ route('car.edit', $car) }}" class="btn btn-primary">Edit Car</a>
+        <a href="{{ route('car.images', $car) }}" class="btn btn-default">Manage Images</a>
+        <form action="{{ route('car.destroy', $car) }}" method="POST"
+            onsubmit="return confirm('Are you sure you want to delete this car?');" style="display: inline;">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-danger">Delete Car</button>
+        </form>
+    </div>
     @endauth
     <div class="car-details-content">
 
@@ -26,9 +26,8 @@
             <div class="car-images-carousel">
                 <div class="car-image-wrapper">
                     <img src="{{ $car->images->first() ? asset('storage/' . $car->images->first()->image_path) : 'https://placehold.co/800x600?text=No+Image' }}"
-                         alt="{{ $car->maker->name }} {{ $car->model->name }}"
-                         class="car-active-image"
-                         id="activeImage" />
+                        alt="{{ $car->maker->name }} {{ $car->model->name }}" class="car-active-image"
+                        id="activeImage" />
                 </div>
                 <div class="car-image-thumbnails">
                     @foreach($car->images as $image)
@@ -62,19 +61,19 @@
                     @foreach($allFeatures as $feature)
                     <li>
                         @if(in_array($feature->id, $carFeatureIds))
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                style="color: rgb(0, 192, 102)">
-                                <path fill-rule="evenodd"
-                                    d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
-                                    clip-rule="evenodd" />
-                            </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            style="color: rgb(0, 192, 102)">
+                            <path fill-rule="evenodd"
+                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
+                                clip-rule="evenodd" />
+                        </svg>
                         @else
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                style="color: red">
-                                <path fill-rule="evenodd"
-                                    d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm3 10.5a.75.75 0 0 0 0-1.5H9a.75.75 0 0 0 0 1.5h6Z"
-                                    clip-rule="evenodd" />
-                            </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            style="color: red">
+                            <path fill-rule="evenodd"
+                                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm3 10.5a.75.75 0 0 0 0-1.5H9a.75.75 0 0 0 0 1.5h6Z"
+                                clip-rule="evenodd" />
+                        </svg>
                         @endif
                         {{ $feature->name }}
                     </li>

@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class CarController extends Controller
 {
@@ -35,6 +36,17 @@ class CarController extends Controller
         return view('car_template.car_search');
     }
 
+    public function favorites()
+    {
+        $favorites = Auth::user()
+            ->favorites()
+            ->with(['maker', 'model', 'carType', 'fuelType', 'images', 'state', 'city'])
+            ->get();
+
+        return view('car_template.favorite_cars', compact('favorites'));
+    }
+
+
     /**
      * Display a listing of the resource.
      */
@@ -46,8 +58,7 @@ class CarController extends Controller
         // ->get();
         $latest_cars = Car::where('published', true)
             ->latest()
-            ->take(9)
-            ->get();
+            ->paginate(9);
         // $latest_cars->withRelationshipAutoloading();
         return view('car_template.home', compact('latest_cars'));
     }
