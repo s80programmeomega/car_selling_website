@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Scout\Searchable;
 use Yajra\Auditable\AuditableTrait;
 
@@ -162,5 +163,43 @@ class Car extends Model
     public static function searchCount($query = '')
     {
         return static::search($query)->raw()['found'] ?? 0;
+    }
+
+    protected static function booted()
+    {
+        // Clear cache when car is created
+        static::created(function () {
+            self::clearLatestCarsCache();
+        });
+
+        // Clear cache when car is updated
+        static::updated(function ($car) {
+            // Skip cache clear if ONLY view_count changed
+            if ($car->wasChanged('view_count')) {
+                return;  // Don't clear cache
+            }
+
+            // Clear cache for other changes
+            self::clearLatestCarsCache();
+        });
+
+        // Clear cache when car is deleted
+        static::deleted(function () {
+            self::clearLatestCarsCache();
+        });
+    }
+
+    /**
+     * Clear all latest cars cache pages
+     */
+    public static function clearLatestCarsCache()
+    {
+        // Clear all search-related cache keys
+        // This is aggressive but ensures fresh results
+        // / Clear only latest cars pagination cache (first 50 pages)
+        // Cache::flush();  // Or use tags if using Redis
+        for ($page = 1; $page <= 50; $page++) {
+            Cache::forget("latest-cars-page-{$page}");
+        }
     }
 }

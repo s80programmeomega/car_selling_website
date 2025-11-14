@@ -8,6 +8,7 @@ use App\Models\City;
 use App\Models\FuelType;
 use App\Models\Maker;
 use App\Models\State;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
 class HomeSearchForm extends Component
@@ -71,13 +72,13 @@ class HomeSearchForm extends Component
             ? City::where('state_id', $this->state_id)->orderBy('name')->get()
             : collect();
 
-        return view('livewire.car.home-search-form', [
-            'makers' => Maker::orderBy('name')->get(),
-            'models' => $models,
-            'carTypes' => CarType::orderBy('name')->get(),
-            'fuelTypes' => FuelType::orderBy('name')->get(),
-            'states' => State::orderBy('name')->get(),
-            'cities' => $cities,
-        ]);
+            return view('livewire.car.home-search-form', [
+                'makers' => Cache::remember('makers', 3600, fn() => Maker::orderBy('name')->get()),
+                'carTypes' => Cache::remember('car-types', 3600, fn() => CarType::orderBy('name')->get()),
+                'fuelTypes' => Cache::remember('fuel-types', 3600, fn() => FuelType::orderBy('name')->get()),
+                'states' => Cache::remember('states', 3600, fn() => State::orderBy('name')->get()),
+                'models' => $models,
+                'cities' => $cities,
+            ]);
     }
 }

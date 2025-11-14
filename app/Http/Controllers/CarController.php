@@ -56,11 +56,11 @@ class CarController extends Controller
         // ->latest()
         // ->take(9)
         // ->get();
-        $latest_cars = Car::where('published', true)
-            ->latest()
-            ->paginate(9);
+        // $latest_cars = Car::where('published', true)
+        //     ->latest()
+        //     ->paginate(9);
         // $latest_cars->withRelationshipAutoloading();
-        return view('car_template.home', compact('latest_cars'));
+        return view('car_template.home');
     }
 
     /**
