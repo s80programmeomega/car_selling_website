@@ -14,6 +14,14 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+/**
+ * Component for advanced car search with filters and caching.
+ *
+ * Implements multi-level caching:
+ * - Search results cache (2 minutes)
+ * - Dropdown data cache (1 hour)
+ * - Dynamic dependent dropdowns (models, cities)
+ */
 class SearchCars extends Component
 {
     use WithPagination;
@@ -59,7 +67,6 @@ class SearchCars extends Component
 
     public function mount()
     {
-        // Initialize from URL parameters
         $this->maker_id = request('maker_id', '');
         $this->model_id = request('model_id', '');
         $this->state_id = request('state_id', '');
@@ -79,13 +86,13 @@ class SearchCars extends Component
 
     public function updatingMakerId()
     {
-        $this->model_id = '';  // Reset model when maker changes
+        $this->model_id = '';
         $this->resetPage();
     }
 
     public function updatingStateId()
     {
-        $this->city_id = '';  // Reset city when state changes
+        $this->city_id = '';
         $this->resetPage();
     }
 
@@ -113,9 +120,19 @@ class SearchCars extends Component
         $this->resetPage();
     }
 
+    /**
+     * Render search results with multi-level caching.
+     *
+     * Cache Strategy:
+     * - Search results: Tagged 'cars', 2-minute TTL (frequent changes)
+     * - Dropdown data: Tagged 'dropdowns', 1-hour TTL (rarely changes)
+     * - Dependent dropdowns: Tagged 'dropdowns', cached per parent ID
+     *
+     * @return \Illuminate\View\View
+     */
     public function render()
     {
-        // Create unique cache key from all filters
+        // Generate unique cache key from all filter parameters
         $cacheKey = 'search-' . md5(json_encode([
             'search' => $this->search,
             'maker_id' => $this->maker_id,
@@ -133,12 +150,11 @@ class SearchCars extends Component
             'page' => $this->getPage(),
         ]));
 
-        // Cache search results for 2 minutes
-        $cars = Cache::remember($cacheKey, 120, function () {
+        // Cache search results with 'cars' tag for easy invalidation
+        $cars = Cache::tags(['cars'])->remember($cacheKey, 120, function () {
             $query = Car::search($this->search);
             $filters = [];
 
-            // Apply filters
             if ($this->maker_id) {
                 $maker = Maker::find($this->maker_id);
                 if ($maker) {
@@ -197,28 +213,31 @@ class SearchCars extends Component
 
             $query->orderBy($this->sort_by, 'desc');
 
-            return $query->paginate(5,);
+            return $query->paginate(5);
         });
 
-        // Get dynamic models based on selected maker
+        // Cache dependent dropdowns with 'dropdowns' tag
         $models = $this->maker_id
-            ? Cache::remember("models-maker-{$this->maker_id}", 3600, fn() =>
+            ? Cache::tags(['dropdowns'])->remember("models-maker-{$this->maker_id}", 3600, fn() =>
                 CarModel::where('maker_id', $this->maker_id)->orderBy('name')->get())
             : collect();
 
-        // Get dynamic cities based on selected state
         $cities = $this->state_id
-            ? Cache::remember("cities-state-{$this->state_id}", 3600, fn() =>
+            ? Cache::tags(['dropdowns'])->remember("cities-state-{$this->state_id}", 3600, fn() =>
                 City::where('state_id', $this->state_id)->orderBy('name')->get())
             : collect();
 
         return view('livewire.car.search-cars', [
             'cars' => $cars,
-            'makers' => Cache::remember('dropdown-makers', 3600, fn() => Maker::orderBy('name')->get()),
+            'makers' => Cache::tags(['dropdowns'])->remember('dropdown-makers', 3600, fn() =>
+                Maker::orderBy('name')->get()),
             'models' => $models,
-            'carTypes' => Cache::remember('dropdown-car-types', 3600, fn() => CarType::orderBy('name')->get()),
-            'fuelTypes' => Cache::remember('dropdown-fuel-types', 3600, fn() => FuelType::orderBy('name')->get()),
-            'states' => Cache::remember('dropdown-states', 3600, fn() => State::orderBy('name')->get()),
+            'carTypes' => Cache::tags(['dropdowns'])->remember('dropdown-car-types', 3600, fn() =>
+                CarType::orderBy('name')->get()),
+            'fuelTypes' => Cache::tags(['dropdowns'])->remember('dropdown-fuel-types', 3600, fn() =>
+                FuelType::orderBy('name')->get()),
+            'states' => Cache::tags(['dropdowns'])->remember('dropdown-states', 3600, fn() =>
+                State::orderBy('name')->get()),
             'cities' => $cities,
         ]);
     }

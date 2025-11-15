@@ -3,36 +3,33 @@
 namespace App\Listeners;
 
 use App\Events\CarDataChanged;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Cache;
 
+/**
+ * Listener to clear car-related cache when car data changes.
+ *
+ * Uses Redis cache tags for efficient, granular cache invalidation
+ * instead of flushing the entire cache.
+ */
 class ClearCarCache
 {
     /**
-     * Create the event listener.
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
      * Handle the event.
+     *
+     * Clears only car-related cache entries using tags:
+     * - 'cars': All car listing caches
+     * - 'dropdowns': Dropdown data (makers, models, etc.)
+     *
+     * @param CarDataChanged $event
+     * @return void
      */
     public function handle(CarDataChanged $event): void
     {
-        // Clear latest cars pagination cache
-        $perPage = 9;  // Same as in LatestCars component
-        $totalCars = \App\Models\Car::published()->count();
-        $totalPages = ceil($totalCars / $perPage);
+        // Clear all car-related caches using tags
+        // This only affects caches tagged with 'cars', not the entire cache
+        Cache::tags(['cars'])->flush();
 
-        for ($page = 1; $page <= $totalPages; $page++) {
-            Cache::forget("latest-cars-page-{$page}");
-        }
-
-        // Clear all search cache (use cache tags if using Redis, otherwise flush pattern)
-        // Since search uses MD5 hashes, we need to clear all search-* keys
-        Cache::flush();  // Or use tags if Redis is configured
+        // Also clear dropdown caches as they may include counts or related data
+        Cache::tags(['dropdowns'])->flush();
     }
 }
