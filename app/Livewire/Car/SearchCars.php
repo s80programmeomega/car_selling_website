@@ -72,7 +72,6 @@ class SearchCars extends Component
         $this->fuel_type_id = request('fuel_type_id', '');
     }
 
-
     public function updatingSearch()
     {
         $this->resetPage();
@@ -135,7 +134,7 @@ class SearchCars extends Component
         ]));
 
         // Cache search results for 2 minutes
-        $cars = Cache::remember($cacheKey, 120, function() {
+        $cars = Cache::remember($cacheKey, 120, function () {
             $query = Car::search($this->search);
             $filters = [];
 
@@ -198,17 +197,19 @@ class SearchCars extends Component
 
             $query->orderBy($this->sort_by, 'desc');
 
-            return $query->paginate(5);
+            return $query->paginate(5,);
         });
 
         // Get dynamic models based on selected maker
         $models = $this->maker_id
-            ? CarModel::where('maker_id', $this->maker_id)->orderBy('name')->get()
+            ? Cache::remember("models-maker-{$this->maker_id}", 3600, fn() =>
+                CarModel::where('maker_id', $this->maker_id)->orderBy('name')->get())
             : collect();
 
         // Get dynamic cities based on selected state
         $cities = $this->state_id
-            ? City::where('state_id', $this->state_id)->orderBy('name')->get()
+            ? Cache::remember("cities-state-{$this->state_id}", 3600, fn() =>
+                City::where('state_id', $this->state_id)->orderBy('name')->get())
             : collect();
 
         return view('livewire.car.search-cars', [
@@ -221,6 +222,4 @@ class SearchCars extends Component
             'cities' => $cities,
         ]);
     }
-
 }
-

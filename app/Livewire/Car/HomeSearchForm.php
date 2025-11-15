@@ -73,12 +73,13 @@ class HomeSearchForm extends Component
             : collect();
 
             return view('livewire.car.home-search-form', [
-                'makers' => Cache::remember('makers', 3600, fn() => Maker::orderBy('name')->get()),
-                'carTypes' => Cache::remember('car-types', 3600, fn() => CarType::orderBy('name')->get()),
-                'fuelTypes' => Cache::remember('fuel-types', 3600, fn() => FuelType::orderBy('name')->get()),
-                'states' => Cache::remember('states', 3600, fn() => State::orderBy('name')->get()),
+                'makers' => Cache::remember('dropdown-makers', 3600, fn() => Maker::orderBy('name')->get()),
+                'carTypes' => Cache::remember('dropdown-car-types', 3600, fn() => CarType::orderBy('name')->get()),
+                'fuelTypes' => Cache::remember('dropdown-fuel-types', 3600, fn() => FuelType::orderBy('name')->get()),
+                'states' => Cache::remember('dropdown-states', 3600, fn() => State::orderBy('name')->get()),
                 'models' => $models,
                 'cities' => $cities,
             ]);
+
     }
 }

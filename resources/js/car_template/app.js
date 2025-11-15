@@ -107,6 +107,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const prevButton = document.getElementById('prevButton');
     const nextButton = document.getElementById('nextButton');
 
+    if (!prevButton || !nextButton || !activeImage || thumbnails.length === 0) {
+        return;
+      }
 
     let currentIndex = 0;
 
