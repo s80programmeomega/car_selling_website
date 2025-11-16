@@ -76,3 +76,18 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 Route::view('/my-cars', 'car_template.my_cars')->middleware('auth')->name('my-cars');
 
 
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    // ... existing routes ...
+    Route::get('/inquiries', \App\Livewire\Admin\CarInquiries::class)->name('inquiries');
+    Route::get('/reviews', \App\Livewire\Admin\Reviews::class)->name('reviews');
+});
+
+// Add to car detail page routes
+Route::get('/car/{car}/reviews', function (Car $car) {
+    return view('car_template.car_reviews', compact('car'));
+})->name('car.reviews');
+
+Route::get('/car/{car}/inquiry', function (Car $car) {
+    return view('car_template.car_inquiry', compact('car'));
+})->name('car.inquiry');
+
