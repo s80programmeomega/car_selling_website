@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="">
 
     <head>
         @include('partials.head')
@@ -10,7 +10,7 @@
             class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
-            <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse"
+            <a href="{{ route('index') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse"
                 wire:navigate>
                 <x-app-logo />
             </a>
@@ -25,6 +25,28 @@
                 <flux:navlist.group :heading="__('Cars')" class="grid">
                     <flux:navlist.item icon="magnifying-glass" :href="route('car.oldsearch')"
                         :current="request()->routeIs('car.oldsearch')" wire:navigate>{{ __('Search') }}
+                    </flux:navlist.item>
+
+                    <flux:navlist.item icon="" :href="route('admin.makers')"
+                        :current="request()->routeIs('admin.makers')" wire:navigate>{{ __('Makers') }}
+                    </flux:navlist.item>
+                    <flux:navlist.item icon="" :href="route('admin.car-models')"
+                        :current="request()->routeIs('admin.car-models')" wire:navigate>{{ __('Models') }}
+                    </flux:navlist.item>
+                    <flux:navlist.item icon="" :href="route('admin.features')"
+                        :current="request()->routeIs('admin.features')" wire:navigate>{{ __('Features') }}
+                    </flux:navlist.item>
+                    <flux:navlist.item icon="" :href="route('admin.car-types')"
+                        :current="request()->routeIs('admin.car-types')" wire:navigate>{{ __('Car Types') }}
+                    </flux:navlist.item>
+                    <flux:navlist.item icon="" :href="route('admin.fuel-types')"
+                        :current="request()->routeIs('admin.fuel-types')" wire:navigate>{{ __('Fuel Types') }}
+                    </flux:navlist.item>
+                    <flux:navlist.item icon="" :href="route('admin.states')"
+                        :current="request()->routeIs('admin.states')" wire:navigate>{{ __('States') }}
+                    </flux:navlist.item>
+                    <flux:navlist.item icon="" :href="route('admin.cities')"
+                        :current="request()->routeIs('admin.cities')" wire:navigate>{{ __('Cities') }}
                     </flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
@@ -45,7 +67,7 @@
             <!-- Desktop User Menu -->
             <flux:dropdown class="hidden lg:block" position="bottom" align="start">
                 <flux:profile :name="auth()->user()->username" :initials="auth()->user()->initials()"
-                    icon:trailing="chevrons-up-down" />
+                    icon-trailing="chevron-down" />
 
                 <flux:menu class="w-[220px]">
                     <flux:menu.radio.group>

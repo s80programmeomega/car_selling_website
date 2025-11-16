@@ -1,6 +1,14 @@
 <?php
 
 use App\Http\Controllers\CarController;
+use App\Livewire\Admin\CarModels;
+use App\Livewire\Admin\CarTypes;
+use App\Livewire\Admin\Cities;
+use App\Livewire\Admin\Features as AdminFeatures;
+use App\Livewire\Admin\FuelTypes;
+use App\Livewire\Admin\Makers;
+use App\Livewire\Admin\States;
+use App\Livewire\Car\MyCars;
 use App\Livewire\Car\MyFavorites;
 use App\Livewire\Car\OldSearchCars;
 use App\Livewire\Car\SearchCars;
@@ -12,7 +20,7 @@ use App\Models\Car;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
-Route::view('dashboard', 'dashboard')
+Route::view('admin', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
@@ -45,14 +53,26 @@ Route::get('/car/{car}/images', function (Car $car) {
     return view('car_template.car_images', compact('car'));
 })->name('car.images')->middleware('auth');
 
-Route::get('dashboard/car/search', OldSearchCars::class)->name('car.oldsearch');
+Route::get('admin/car/search', OldSearchCars::class)->name('car.oldsearch');
 
 Route::get('/favorites', function () {
     return view('car_template.favorite_cars');
 })->middleware('auth')->name('favorites');
 
 
-// Route::get('/favorites', [CarController::class, 'favorites'])
-//     ->middleware('auth')
-//     ->name('favorites');
+// Admin routes for car-related data management
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/makers', Makers::class)->name('makers');
+    Route::get('/car-models', CarModels::class)->name('car-models');
+    Route::get('/car-types', CarTypes::class)->name('car-types');
+    Route::get('/fuel-types', FuelTypes::class)->name('fuel-types');
+    Route::get('/states', States::class)->name('states');
+    Route::get('/cities', Cities::class)->name('cities');
+    Route::get('/features', AdminFeatures::class)->name('features');
+});
+
+// Route::get('/my-cars', MyCars::class)->middleware('auth')->name('my-cars');
+
+Route::view('/my-cars', 'car_template.my_cars')->middleware('auth')->name('my-cars');
+
 

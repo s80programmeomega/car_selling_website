@@ -41,58 +41,80 @@
             @endforeach
         </div>
         @else
-        <div class="text-center py-12">
+        <div class="text-center py-12 ">
             <h3>No favorites yet</h3>
-            <p>Start browsing cars and add them to your favorites!</p>
+            <p class="py-6">Start browsing cars and add them to your favorites!</p>
+            <br>
             <a href="{{ route('car.search') }}" class="btn btn-primary">Browse Cars</a>
         </div>
         @endif
         {{-- Pagination --}}
         @if($favorites->hasPages())
             <nav class="pagination my-large">
-                {{-- Previous Page --}}
-                @if ($favorites->onFirstPage())
-                    <span class="pagination-item" style="opacity: 0.5; cursor: not-allowed;">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" style="width: 18px">
+                @if($favorites->onFirstPage())
+                    <span class="pagination-item disabled">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 18px">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5" />
+                        </svg>
+                    </span>
+                @else
+                    <a href="{{ $favorites->url(1) }}" wire:navigate class="pagination-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 18px">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5" />
+                        </svg>
+                    </a>
+                @endif
+
+                @if($favorites->onFirstPage())
+                    <span class="pagination-item disabled">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 18px">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                         </svg>
                     </span>
                 @else
-                    <a href="#" wire:click.prevent="previousPage" class="pagination-item">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" style="width: 18px">
+                    <a href="{{ $favorites->previousPageUrl() }}" wire:navigate class="pagination-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 18px">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                         </svg>
                     </a>
                 @endif
 
-                {{-- Page Numbers --}}
                 @foreach(range(1, $favorites->lastPage()) as $page)
                     @if($page == $favorites->currentPage())
                         <span class="pagination-item active">{{ $page }}</span>
                     @else
-                        <a href="#" wire:click.prevent="gotoPage({{ $page }})" class="pagination-item">{{ $page }}</a>
+                        <a href="{{ $favorites->url($page) }}" wire:navigate class="pagination-item">{{ $page }}</a>
                     @endif
                 @endforeach
 
-                {{-- Next Page --}}
-                @if ($favorites->hasMorePages())
-                    <a href="#" wire:click.prevent="nextPage" class="pagination-item">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" style="width: 18px">
+                @if($favorites->hasMorePages())
+                    <a href="{{ $favorites->nextPageUrl() }}" wire:navigate class="pagination-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 18px">
                             <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                         </svg>
                     </a>
                 @else
-                    <span class="pagination-item" style="opacity: 0.5; cursor: not-allowed;">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" style="width: 18px">
+                    <span class="pagination-item disabled">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 18px">
                             <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                         </svg>
                     </span>
                 @endif
+
+                @if($favorites->currentPage() == $favorites->lastPage())
+                    <span class="pagination-item disabled">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 18px">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
+                        </svg>
+                    </span>
+                @else
+                    <a href="{{ $favorites->url($favorites->lastPage()) }}" wire:navigate class="pagination-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 18px">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
+                        </svg>
+                    </a>
+                @endif
             </nav>
-        @endif
+            @endif
     </div>
 </section>
