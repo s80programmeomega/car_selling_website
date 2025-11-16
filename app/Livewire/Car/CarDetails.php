@@ -21,7 +21,7 @@ class CarDetails extends Component
 
     public function loadCarData()
     {
-        $this->car = Car::with(['maker', 'model', 'carType', 'fuelType', 'state', 'city', 'owner.cars', ])
+        $this->car = Car::with(['maker', 'model', 'carType', 'fuelType', 'state', 'city', 'owner.cars'])
             ->findOrFail($this->carId);
 
         $this->allFeatures = Feature::all();
@@ -30,8 +30,6 @@ class CarDetails extends Component
 
     public function render()
     {
-        return view('livewire.car.car-details', [
-            'pollInterval' => rand(2, 10)
-            ]);
+        return view('livewire.car.car-details');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Events\CarDataChanged;
 use App\Models\CarModel;
 use Illuminate\Support\Facades\Cache;
 
@@ -12,6 +13,9 @@ class CarModelObserver
      */
     public function created(CarModel $carModel): void
     {
+        foreach ($carModel->cars as $car) {
+            event(new CarDataChanged($car));
+        }
         Cache::forget("models-maker-{$carModel->maker_id}");
     }
 
@@ -20,6 +24,9 @@ class CarModelObserver
     */
     public function updated(CarModel $carModel): void
     {
+        foreach ($carModel->cars as $car) {
+            event(new CarDataChanged($car));
+        }
         Cache::forget("models-maker-{$carModel->maker_id}");
     }
 
@@ -28,6 +35,9 @@ class CarModelObserver
     */
     public function deleted(CarModel $carModel): void
     {
+        foreach ($carModel->cars as $car) {
+            event(new CarDataChanged($car));
+        }
         Cache::forget("models-maker-{$carModel->maker_id}");
     }
 

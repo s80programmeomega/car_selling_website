@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Events\CarDataChanged;
 use App\Models\Maker;
 use Illuminate\Support\Facades\Cache;
 
@@ -12,6 +13,9 @@ class MakerObserver
      */
     public function created(Maker $maker): void
     {
+        // foreach ($maker->cars as $car) {
+        //     event(new CarDataChanged($car));
+        // }
         Cache::forget('dropdown-makers');
     }
 
@@ -20,6 +24,9 @@ class MakerObserver
      */
     public function updated(Maker $maker): void
     {
+        // foreach ($maker->cars as $car) {
+        //     event(new CarDataChanged($car));
+        // }
         Cache::forget('dropdown-makers');
     }
 
@@ -28,6 +35,9 @@ class MakerObserver
      */
     public function deleted(Maker $maker): void
     {
+        // foreach ($maker->cars as $car) {
+        //     event(new CarDataChanged($car));
+        // }
         Cache::forget('dropdown-makers');
     }
 

@@ -1,30 +1,33 @@
 <div class="car-details card"
     x-data="{
-        interval: {{ rand(15, 30) }},
-        timerId: null,
-        startPolling() {
-            this.timerId = setTimeout(() => {
-                $wire.$refresh();
-                this.interval = Math.floor(Math.random() * 9) + 15;
-                this.startPolling();
-            }, this.interval * 1000);
-        },
-        stopPolling() {
-            if (this.timerId) clearTimeout(this.timerId);
+        pendingRefresh: false,
+        setupEcho() {
+            if (window.Echo) {
+                window.Echo.channel('cars')
+                    .listen('CarDataChanged', (e) => {
+                        console.log('hello test before refresh!');
+                        if (e.car_id == {{ $car->id }}) {
+                            if (!document.hidden) {
+                                console.log(e);
+                                $wire.$refresh();
+                                console.log('hello test after refresh!');
+                                } else {
+                                    this.pendingRefresh = true;
+                                    }
+                                    }
+                    });
+            }
         }
     }"
     x-init="
-        startPolling();
+        setupEcho();
         document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                stopPolling();
-            } else {
-                startPolling();
+            if (!document.hidden && pendingRefresh) {
+                $wire.$refresh();
+                pendingRefresh = false;
             }
         });
     ">
-
-    <h1 x-text="interval"></h1>
 
     <div class="flex items-center justify-between">
         <p class="car-details-price">${{ number_format($car->price) }}</p>
@@ -95,4 +98,12 @@
         </svg>
         {{ $car->phone }}
     </a>
+    <a href="{{ route('car.inquiry', $car) }}" class="car-details-phone" style="margin-top: 0.5rem;">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 16px">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+        </svg>
+        Make An Inquiry
+    </a>
+
+
 </div>

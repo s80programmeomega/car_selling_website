@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Events\CarDataChanged;
 use App\Models\State;
 use Illuminate\Support\Facades\Cache;
 
@@ -12,6 +13,9 @@ class StateObserver
      */
     public function created(State $state): void
     {
+        // foreach ($state->cars as $car) {
+        //     event(new CarDataChanged($car));
+        // }
         Cache::forget('dropdown-states');
     }
 
@@ -20,6 +24,9 @@ class StateObserver
     */
     public function updated(State $state): void
     {
+        // foreach ($state->cars as $car) {
+        //     event(new CarDataChanged($car));
+        // }
         Cache::forget('dropdown-states');
     }
 
@@ -28,6 +35,9 @@ class StateObserver
     */
     public function deleted(State $state): void
     {
+        // foreach ($state->cars as $car) {
+        //     event(new CarDataChanged($car));
+        // }
         Cache::forget('dropdown-states');
     }
 

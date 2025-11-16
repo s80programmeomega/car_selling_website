@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Events\CarDataChanged;
 use App\Models\City;
 use Illuminate\Support\Facades\Cache;
 
@@ -12,6 +13,9 @@ class CityObserver
      */
     public function created(City $city): void
     {
+        // foreach ($city->cars as $car) {
+        //     event(new CarDataChanged($car));
+        // }
         Cache::forget("cities-state-{$city->state_id}");
     }
 
@@ -20,6 +24,9 @@ class CityObserver
      */
     public function updated(City $city): void
     {
+        // foreach ($city->cars as $car) {
+        //     event(new CarDataChanged($car));
+        // }
         Cache::forget("cities-state-{$city->state_id}");
     }
 
@@ -28,6 +35,9 @@ class CityObserver
      */
     public function deleted(City $city): void
     {
+        // foreach ($city->cars as $car) {
+        //     event(new CarDataChanged($car));
+        // }
         Cache::forget("cities-state-{$city->state_id}");
     }
 

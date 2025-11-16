@@ -18,7 +18,7 @@
       referrerpolicy="no-referrer"
     />
 
-    @vite(['resources/css/car_template/app.css', 'resources/js/car_template/app.js'])
+    @vite(['resources/css/car_template/app.css','resources/css/app.css', 'resources/js/car_template/app.js', 'resources/js/app.js'])
 
     <title>@yield('title', 'Car Selling Website')</title>
 

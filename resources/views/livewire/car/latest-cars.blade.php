@@ -1,28 +1,28 @@
 <div x-data="{
-    interval: {{ rand(30, 180) }},
-    timerId: null,
-    startPolling() {
-        this.timerId = setTimeout(() => {
-            $wire.$refresh();
-            this.interval = Math.floor(Math.random() * 9) + 30;
-            this.startPolling();
-        }, this.interval * 1000);
-    },
-    stopPolling() {
-        if (this.timerId) clearTimeout(this.timerId);
+    pendingRefresh: false,
+    setupEcho() {
+        if (window.Echo) {
+            window.Echo.channel('cars')
+                .listen('CarDataChanged', (e) => {
+                    if (!document.hidden) {
+                        $wire.$refresh();
+                    } else {
+                        this.pendingRefresh = true;
+                    }
+                });
+        }
     }
 }" x-init="
-    startPolling();
+    setupEcho();
     document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-            stopPolling();
-        } else {
-            startPolling();
+        if (!document.hidden && pendingRefresh) {
+            $wire.$refresh();
+            pendingRefresh = false;
         }
     });
 ">
 
-    <h1 x-text="interval"></h1>
+
     <div class="car-items-listing">
         @forelse($latest_cars as $car)
         <div class="car-item card" wire:key="car-{{ $car->id }}" style="transition: all 0.5s ease;">
@@ -51,6 +51,7 @@
 
     @if($latest_cars->hasPages())
     <nav class="pagination my-large">
+        {{-- Pagination code remains the same --}}
         @if ($latest_cars->onFirstPage())
         <span class="pagination-item" style="opacity: 0.5; cursor: not-allowed;">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"

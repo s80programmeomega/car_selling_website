@@ -1,27 +1,26 @@
 <div class="car-images-carousel" x-data="{
-    interval: {{ rand(15, 30) }},
-    timerId: null,
-    startPolling() {
-        this.timerId = setTimeout(() => {
-            $wire.$refresh();
-            this.interval = Math.floor(Math.random() * 9) + 15;
-            this.startPolling();
-        }, this.interval * 1000);
-    },
-    stopPolling() {
-        if (this.timerId) clearTimeout(this.timerId);
+    pendingRefresh: false,
+    setupEcho() {
+        if (window.Echo) {
+            window.Echo.channel('cars')
+                .listen('CarDataChanged', (e) => {
+                    if (!document.hidden) {
+                        $wire.$refresh();
+                    } else {
+                        this.pendingRefresh = true;
+                    }
+                });
+        }
     }
 }" x-init="
-    startPolling();
+    setupEcho();
     document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-            stopPolling();
-        } else {
-            startPolling();
+        if (!document.hidden && pendingRefresh) {
+            $wire.$refresh();
+            pendingRefresh = false;
         }
     });
 ">
-    <h1 x-text="interval"></h1>
     <div class="car-image-wrapper">
         <img src="{{ $car->images->first() ? asset('storage/' . $car->images->first()->image_path) : 'https://placehold.co/800x600?text=No+Image' }}"
             alt="{{ $car->maker->name }} {{ $car->model->name }}" class="car-active-image" id="activeImage" />

@@ -27,35 +27,36 @@
                         :current="request()->routeIs('car.oldsearch')" wire:navigate>{{ __('Search') }}
                     </flux:navlist.item>
 
-                    <flux:navlist.item icon="" :href="route('admin.makers')"
+                    <flux:navlist.item icon="building-office" :href="route('admin.makers')"
                         :current="request()->routeIs('admin.makers')" wire:navigate>{{ __('Makers') }}
                     </flux:navlist.item>
-                    <flux:navlist.item icon="" :href="route('admin.car-models')"
+                    <flux:navlist.item icon="cube" :href="route('admin.car-models')"
                         :current="request()->routeIs('admin.car-models')" wire:navigate>{{ __('Models') }}
                     </flux:navlist.item>
-                    <flux:navlist.item icon="" :href="route('admin.features')"
+                    <flux:navlist.item icon="sparkles" :href="route('admin.features')"
                         :current="request()->routeIs('admin.features')" wire:navigate>{{ __('Features') }}
                     </flux:navlist.item>
-                    <flux:navlist.item icon="" :href="route('admin.car-types')"
+                    <flux:navlist.item icon="tag" :href="route('admin.car-types')"
                         :current="request()->routeIs('admin.car-types')" wire:navigate>{{ __('Car Types') }}
                     </flux:navlist.item>
-                    <flux:navlist.item icon="" :href="route('admin.fuel-types')"
+                    <flux:navlist.item icon="fire" :href="route('admin.fuel-types')"
                         :current="request()->routeIs('admin.fuel-types')" wire:navigate>{{ __('Fuel Types') }}
                     </flux:navlist.item>
-                    <flux:navlist.item icon="" :href="route('admin.states')"
+                    <flux:navlist.item icon="map-pin" :href="route('admin.states')"
                         :current="request()->routeIs('admin.states')" wire:navigate>{{ __('States') }}
                     </flux:navlist.item>
-                    <flux:navlist.item icon="" :href="route('admin.cities')"
+                    <flux:navlist.item icon="map" :href="route('admin.cities')"
                         :current="request()->routeIs('admin.cities')" wire:navigate>{{ __('Cities') }}
                     </flux:navlist.item>
-                    <flux:navlist.item icon="" :href="route('admin.inquiries')"
+                    <flux:navlist.item icon="envelope" :href="route('admin.inquiries')"
                         :current="request()->routeIs('admin.inquiries')" wire:navigate>{{ __('Car Inquiries') }}
                     </flux:navlist.item>
-                    <flux:navlist.item icon="" :href="route('admin.reviews')"
+                    <flux:navlist.item icon="star" :href="route('admin.reviews')"
                         :current="request()->routeIs('admin.reviews')" wire:navigate>{{ __('Reviews') }}
                     </flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
+
             <flux:spacer />
 
             {{-- <flux:navlist variant="outline">

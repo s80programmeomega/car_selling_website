@@ -1,4 +1,26 @@
-<div class="p-6">
+<div class="p-6"x-data="{
+    pendingRefresh: false,
+    setupEcho() {
+        if (window.Echo) {
+            window.Echo.channel('cars')
+                .listen('CarDataChanged', (e) => {
+                    if (!document.hidden) {
+                        $wire.$refresh();
+                    } else {
+                        this.pendingRefresh = true;
+                    }
+                });
+        }
+    }
+}" x-init="
+    setupEcho();
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && pendingRefresh) {
+            $wire.$refresh();
+            pendingRefresh = false;
+        }
+    });
+">
     <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-bold">Car Inquiries</h2>
         <span class="bg-red-500 text-white px-3 py-1 rounded">{{ $unreadCount }} Unread</span>
