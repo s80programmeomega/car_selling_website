@@ -2,13 +2,14 @@
     pendingRefresh: false,
     setupEcho() {
         if (window.Echo) {
-            window.Echo.channel('cars')
-                .listen('CarDataChanged', (e) => {
-                    if (!document.hidden) {
-                        $wire.$refresh();
-                    } else {
-                        this.pendingRefresh = true;
-                    }
+            window.Echo.channel('car-created')
+                .listen('CarCreated', (e) => {
+                        if (!document.hidden) {
+                            console.log(e);
+                            $wire.$refresh();
+                            } else {
+                                this.pendingRefresh = true;
+                                }
                 });
         }
     }
@@ -21,11 +22,51 @@
         }
     });
 ">
-
-
+    {{-- Loading Overlay --}}
+    <div wire:loading.flex
+        style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.8); z-index: 9999; align-items: center; justify-content: center;">
+        <div style="text-align: center;">
+            <svg class="animate-spin" style="width: 48px; height: 48px; color: var(--primary-color);"
+                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                </circle>
+                <path class="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                </path>
+            </svg>
+            <p style="margin-top: 1rem; color: var(--primary-color); font-weight: bold;">Searching...</p>
+        </div>
+    </div>
     <div class="car-items-listing">
         @forelse($latest_cars as $car)
-        <div class="car-item card" wire:key="car-{{ $car->id }}" style="transition: all 0.5s ease;">
+        <div class="car-item card" wire:key="car-{{ $car->id }}" style="transition: all 0.5s ease;" x-data="{
+                pendingRefresh: false,
+                setupEcho() {
+                    if (window.Echo) {
+                        window.Echo.channel('car-updated')
+                            .listen('CarDataChanged', (e) => {
+                                console.log('hello test before refresh!');
+                                if (e.car_id == {{ $car->id }}) {
+                                    if (!document.hidden) {
+                                        console.log(e);
+                                        $wire.$refresh();
+                                        console.log('hello test after refresh!');
+                                        } else {
+                                            this.pendingRefresh = true;
+                                            }
+                                            }
+                            });
+                    }
+                }
+            }" x-init="
+                setupEcho();
+                document.addEventListener('visibilitychange', () => {
+                    if (!document.hidden && pendingRefresh) {
+                        $wire.$refresh();
+                        pendingRefresh = false;
+                    }
+                });
+            ">
             <a href="{{ route('car.show', $car->id) }}">
                 <img src="{{ $car->images->first() ? asset('storage/' . $car->images->first()->image_path) : 'https://placehold.co/400x300?text=' . urlencode($car->maker->name) }}"
                     alt="{{ $car->maker->name }} {{ $car->model->name }}" class="car-item-img rounded-t" />

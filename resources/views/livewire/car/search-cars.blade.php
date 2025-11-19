@@ -221,7 +221,35 @@
             {{-- Car Items Grid --}}
             <div class="car-items-listing" wire:loading.class="opacity-50">
                 @forelse($cars as $car)
-                <div class="car-item card" style="transition: all 0.3s;" >
+                <div class="car-item card" style="transition: all 0.3s;" x-data="{
+                    pendingRefresh: false,
+                    setupEcho() {
+                        if (window.Echo) {
+                            window.Echo.channel('car-updated')
+                                .listen('CarDataChanged', (e) => {
+                                    console.log('hello test before refresh!');
+                                    if (e.car_id == {{ $car->id }}) {
+                                        if (!document.hidden) {
+                                            console.log(e);
+                                            $wire.$refresh();
+                                            console.log('hello test after refresh!');
+                                            } else {
+                                                this.pendingRefresh = true;
+                                                }
+                                                }
+                                });
+                        }
+                    }
+                }"
+                x-init="
+                    setupEcho();
+                    document.addEventListener('visibilitychange', () => {
+                        if (!document.hidden && pendingRefresh) {
+                            $wire.$refresh();
+                            pendingRefresh = false;
+                        }
+                    });
+                ">
                     <a href="{{ route('car.show', $car) }}">
                         @if($car->images->first())
                         <img src="{{ Storage::url($car->images->first()->image_path) }}"

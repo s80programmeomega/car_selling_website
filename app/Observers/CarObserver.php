@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Events\CarCreated;
 use App\Events\CarDataChanged;
 use App\Models\Car;
 
@@ -9,7 +10,7 @@ class CarObserver
 {
     public function created(Car $car): void
     {
-        event(new CarDataChanged($car));
+        event(new CarCreated($car));
     }
 
     public function updated(Car $car): void

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\CarDataChanged;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -168,7 +169,10 @@ class Car extends Model
 
     protected static function booted()
     {
-        static::saved(fn($model) => Cache::tags(['dropdowns'])->forget("models-maker-{$model->maker_id}"));
+        static::saved(function($model) {
+            Cache::tags(['dropdowns'])->forget("models-maker-{$model->maker_id}");
+            CarDataChanged::dispatch($model);
+        });
         static::deleted(fn($model) => Cache::tags(['dropdowns'])->forget("models-maker-{$model->maker_id}"));
     }
 

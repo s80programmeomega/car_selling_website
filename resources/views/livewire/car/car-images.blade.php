@@ -2,17 +2,23 @@
     pendingRefresh: false,
     setupEcho() {
         if (window.Echo) {
-            window.Echo.channel('cars')
+            window.Echo.channel('car-updated')
                 .listen('CarDataChanged', (e) => {
-                    if (!document.hidden) {
-                        $wire.$refresh();
-                    } else {
-                        this.pendingRefresh = true;
-                    }
+                    console.log('hello test before refresh!');
+                    if (e.car_id == {{ $car->id }}) {
+                        if (!document.hidden) {
+                            console.log(e);
+                            $wire.$refresh();
+                            console.log('hello test after refresh!');
+                            } else {
+                                this.pendingRefresh = true;
+                                }
+                                }
                 });
         }
     }
-}" x-init="
+}"
+x-init="
     setupEcho();
     document.addEventListener('visibilitychange', () => {
         if (!document.hidden && pendingRefresh) {

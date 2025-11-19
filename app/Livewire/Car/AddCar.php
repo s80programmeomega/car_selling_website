@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Car;
 
+use App\Events\CarCreated;
 use App\Models\Car;
 use App\Models\CarModel;
 use App\Models\CarType;
@@ -11,6 +12,7 @@ use App\Models\FuelType;
 use App\Models\Maker;
 use App\Models\State;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
@@ -162,6 +164,8 @@ class AddCar extends Component
             }
 
             DB::commit();
+
+            Broadcast(new CarCreated($car));
 
             session()->flash('message', 'Car added successfully.');
             return redirect()->route('car.index');

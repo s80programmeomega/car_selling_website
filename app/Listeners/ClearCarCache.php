@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\CarCreated;
 use App\Events\CarDataChanged;
 use Illuminate\Support\Facades\Cache;
 
