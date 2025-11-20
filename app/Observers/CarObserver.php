@@ -4,10 +4,14 @@ namespace App\Observers;
 
 use App\Events\CarCreated;
 use App\Events\CarDataChanged;
+use App\Events\CarDeleted;
 use App\Models\Car;
 
 class CarObserver
 {
+
+    public static array $car_data_before_delete = [];
+
     public function created(Car $car): void
     {
         event(new CarCreated($car));
@@ -30,9 +34,28 @@ class CarObserver
         // dd($changes, 'after firing event');
     }
 
-
-    public function deleted(Car $car): void
+    public function deleting(Car $car): void
     {
-        event(new CarDataChanged($car));
+        event(new CarDeleted([
+            'id' => $car->id,
+            'maker' => $car->maker->name,
+            'model' => $car->model->name,
+            'year' => $car->year,
+            'price' => $car->price,
+        ]));
     }
+
+    // public function deleting(Car $car): void
+    // {
+    //     $this->car_data_before_delete = $car->toArray();
+    //     // dd('CarObserver deleting', $this->car_data_before_delete);
+    //     event(new CarDeleted($this->car_data_before_delete));
+    //     // dd('Car data set on deleting', $this->car_data_before_delete);
+    // }
+
+    // public function deleted(): void
+    // {
+    //     dd('CarObserver deleted', $this->car_data_before_delete);
+    //     event(new CarDeleted($this->car_data_before_delete));
+    // }
 }

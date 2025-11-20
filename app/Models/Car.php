@@ -167,14 +167,14 @@ class Car extends Model
         return static::search($query)->raw()['found'] ?? 0;
     }
 
-    protected static function booted()
-    {
-        static::saved(function($model) {
-            Cache::tags(['dropdowns'])->forget("models-maker-{$model->maker_id}");
-            CarDataChanged::dispatch($model);
-        });
-        static::deleted(fn($model) => Cache::tags(['dropdowns'])->forget("models-maker-{$model->maker_id}"));
-    }
+    // protected static function booted()
+    // {
+    //     static::saved(function($model) {
+    //         Cache::tags(['dropdowns'])->forget("models-maker-{$model->maker_id}");
+    //         CarDataChanged::dispatch($model);
+    //     });
+    //     static::deleted(fn($model) => Cache::tags(['dropdowns'])->forget("models-maker-{$model->maker_id}"));
+    // }
 
     // protected static function booted()
     // {

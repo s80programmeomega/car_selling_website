@@ -24,7 +24,7 @@ class ClearCarCache
      * @param CarDataChanged $event
      * @return void
      */
-    public function handle(CarDataChanged $event): void
+    public function handle($event): void
     {
         // Clear all car-related caches using tags
         // This only affects caches tagged with 'cars', not the entire cache

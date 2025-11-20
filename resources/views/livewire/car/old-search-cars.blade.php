@@ -11,6 +11,15 @@
                                 this.pendingRefresh = true;
                                 }
                 });
+            window.Echo.channel('car-deleted')
+            .listen('CarDeleted', (e) => {
+                    if (!document.hidden) {
+                        console.log(e);
+                        $wire.$refresh();
+                        } else {
+                            this.pendingRefresh = true;
+                            }
+            });
         }
     }
 }" x-init="
