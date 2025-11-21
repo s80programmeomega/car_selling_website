@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\FavoriteCarAdded;
 use App\Http\Requests\StoreCarRequest;
 use App\Http\Requests\UpdateCarRequest;
 use App\Models\Car;
@@ -42,6 +43,7 @@ class CarController extends Controller
             ->favorites()
             ->with(['maker', 'model', 'carType', 'fuelType', 'images', 'state', 'city'])
             ->get();
+
 
         return view('car_template.favorite_cars', compact('favorites'));
     }

@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controllers\CarController;
+use App\Livewire\Admin\CarInquiries;
 use App\Livewire\Admin\CarModels;
 use App\Livewire\Admin\CarTypes;
 use App\Livewire\Admin\Cities;
 use App\Livewire\Admin\Features as AdminFeatures;
 use App\Livewire\Admin\FuelTypes;
 use App\Livewire\Admin\Makers;
+use App\Livewire\Admin\Reviews;
 use App\Livewire\Admin\States;
 use App\Livewire\Car\MyCars;
 use App\Livewire\Car\MyFavorites;
@@ -69,6 +71,8 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/states', States::class)->name('states');
     Route::get('/cities', Cities::class)->name('cities');
     Route::get('/features', AdminFeatures::class)->name('features');
+    Route::get('/inquiries', CarInquiries::class)->name('inquiries');
+    Route::get('/reviews', Reviews::class)->name('reviews');
 });
 
 // Route::get('/my-cars', MyCars::class)->middleware('auth')->name('my-cars');
@@ -76,11 +80,6 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 Route::view('/my-cars', 'car_template.my_cars')->middleware('auth')->name('my-cars');
 
 
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    // ... existing routes ...
-    Route::get('/inquiries', \App\Livewire\Admin\CarInquiries::class)->name('inquiries');
-    Route::get('/reviews', \App\Livewire\Admin\Reviews::class)->name('reviews');
-});
 
 // Add to car detail page routes
 Route::get('/car/{car}/reviews', function (Car $car) {
@@ -90,4 +89,7 @@ Route::get('/car/{car}/reviews', function (Car $car) {
 Route::get('/car/{car}/inquiry', function (Car $car) {
     return view('car_template.car_inquiry', compact('car'));
 })->name('car.inquiry');
+
+Route::view('/contact', 'car_template.contact')->name('contact');
+
 

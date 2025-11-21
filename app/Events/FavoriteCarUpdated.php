@@ -4,24 +4,27 @@ namespace App\Events;
 
 use App\Models\Car;
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Auth;
 
-class CarCreated implements ShouldBroadcast, ShouldQueue
+class FavoriteCarUpdated implements ShouldBroadcast, ShouldQueue
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    public $userId;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(public Car $car)
+    public function __construct(public Car $car, $userId)
     {
-        // dd('Instance created');
+        $this->userId = $userId;
     }
 
     /**
@@ -32,23 +35,15 @@ class CarCreated implements ShouldBroadcast, ShouldQueue
     public function broadcastOn(): array
     {
         return [
-            new Channel('car-created'),
+            new PrivateChannel('favorite-car-updated.'.$this->userId),
         ];
     }
 
-    /**
-     * The event's broadcast name.
-     */
-    // public function broadcastAs(): string
-    // {
-    //     return 'CarCreated';
-    // }
-
-    public function broadcastWith(): array
+    public function broadcastWith()
     {
         return [
             'car_id' => $this->car->id,
-            'timestamp' => now(),
+            'user_id' => $this->userId,
         ];
     }
 }

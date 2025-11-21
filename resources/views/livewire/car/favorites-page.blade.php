@@ -1,4 +1,27 @@
-<section>
+<section x-data="{
+    pendingRefresh: false,
+    setupEcho() {
+        if (window.Echo) {
+            window.Echo.private('favorite-car-updated.{{ auth()->id() }}')
+                .listen('FavoriteCarUpdated', (e) => {
+                    if (!document.hidden) {
+                        console.log(e);
+                        $wire.$refresh();
+                        } else {
+                            this.pendingRefresh = true;
+                    }
+                    });
+        }
+    }
+}" x-init="
+    setupEcho();
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && pendingRefresh) {
+            $wire.$refresh();
+            pendingRefresh = false;
+        }
+    });
+">
     <div class="container">
         <div class="flex items-center justify-start gap-1">
             <h2 class="mx-large">

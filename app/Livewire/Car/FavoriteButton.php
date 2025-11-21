@@ -4,6 +4,8 @@ namespace App\Livewire\Car;
 
 use App\Models\Car;
 use Livewire\Component;
+use App\Events\FavoriteCarUpdated;
+use Illuminate\Support\Facades\Auth;
 
 class FavoriteButton extends Component
 {
@@ -18,27 +20,28 @@ class FavoriteButton extends Component
 
     public function checkFavoriteStatus()
     {
-        if (auth()->check()) {
-            $this->isFavorited = auth()->user()->favorites()->where('car_id', $this->car->id)->exists();
+        if (Auth::check()) {
+            $this->isFavorited = Auth::user()->favorites()->where('car_id', $this->car->id)->exists();
         }
     }
 
     public function toggleFavorite()
     {
-        if (!auth()->check()) {
+        if (!Auth::check()) {
             return redirect()->route('login');
         }
 
         if ($this->isFavorited) {
-            auth()->user()->favorites()->detach($this->car->id);
+            Auth::user()->favorites()->detach($this->car->id);
             $this->isFavorited = false;
         } else {
-            auth()->user()->favorites()->attach($this->car->id);
+            Auth::user()->favorites()->attach($this->car->id);
             $this->isFavorited = true;
         }
 
         // Emit event to parent component
-        $this->dispatch('favoriteToggled', $this->car->id, $this->isFavorited);
+        // dd('Before toggling favorite count');
+        event(new FavoriteCarUpdated($this->car, Auth::id()));
     }
 
     public function render()
