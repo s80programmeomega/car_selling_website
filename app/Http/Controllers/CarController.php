@@ -7,11 +7,12 @@ use App\Http\Requests\StoreCarRequest;
 use App\Http\Requests\UpdateCarRequest;
 use App\Models\Car;
 use App\Models\Feature;
+use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Auth;
 
 class CarController extends Controller
 {
@@ -44,10 +45,8 @@ class CarController extends Controller
             ->with(['maker', 'model', 'carType', 'fuelType', 'images', 'state', 'city'])
             ->get();
 
-
         return view('car_template.favorite_cars', compact('favorites'));
     }
-
 
     /**
      * Display a listing of the resource.
@@ -62,6 +61,14 @@ class CarController extends Controller
         //     ->latest()
         //     ->paginate(9);
         // $latest_cars->withRelationshipAutoloading();
+
+        Debugbar::info('Info!');
+        Debugbar::error('Error!');
+        Debugbar::warning('Watch out…');
+        Debugbar::addMessage('Another message', 'mylabel');
+
+        debugbar()->info('Using helper function');
+
         return view('car_template.home');
     }
 
@@ -89,7 +96,6 @@ class CarController extends Controller
         // Load all relationships
         // $car->load(['maker', 'model', 'carType', 'fuelType', 'state', 'city', 'images', 'features', 'owner']);
 
-
         // Get all features with car's features marked
         $allFeatures = Feature::all();
         $carFeatureIds = $car->features->pluck('id')->toArray();
@@ -107,7 +113,6 @@ class CarController extends Controller
     {
         return view('car_template.edit_car', compact('car'));
     }
-
 
     /**
      * Update the specified resource in storage.
@@ -144,5 +149,4 @@ class CarController extends Controller
             return back();
         }
     }
-
 }

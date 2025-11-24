@@ -165,7 +165,6 @@ class AddCar extends Component
 
             DB::commit();
 
-            Broadcast(new CarCreated($car));
 
             session()->flash('message', 'Car added successfully.');
             return redirect()->route('car.index');

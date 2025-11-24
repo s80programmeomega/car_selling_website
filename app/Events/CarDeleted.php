@@ -12,7 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class CarDeleted implements ShouldBroadcast, ShouldQueue
+class CarDeleted implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -48,5 +48,10 @@ class CarDeleted implements ShouldBroadcast, ShouldQueue
             'price' => $this->car_data['price'],
             'timestamp' => now(),
         ];
+    }
+
+    public function broadcastQueue(): string
+    {
+        return 'cars';
     }
 }

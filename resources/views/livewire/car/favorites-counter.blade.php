@@ -6,7 +6,16 @@
                 .listen('FavoriteCarUpdated', (e) => {
                     if (!document.hidden) {
                         console.log(e);
-                        Livewire.find('{{ $this->getId() }}').call('updateCount');
+                        $wire.updateCount();
+                    } else {
+                        this.pendingRefresh = true;
+                    }
+                });
+            window.Echo.channel('car-deleted')
+                .listen('CarDeleted', (e) => {
+                    if (!document.hidden) {
+                        console.log(e);
+                        $wire.updateCount();
                     } else {
                         this.pendingRefresh = true;
                     }
@@ -17,7 +26,7 @@
     setupEcho();
     document.addEventListener('visibilitychange', () => {
         if (!document.hidden && pendingRefresh) {
-            Livewire.find('{{ $this->getId() }}').call('updateCount');
+            $wire.updateCount();
             pendingRefresh = false;
         }
     });

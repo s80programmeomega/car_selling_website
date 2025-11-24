@@ -29,7 +29,7 @@ Home Page
                     </div>
                 </div>
                 <div class="slide-image">
-                    <img src="/img/view-3d-car.jpg" alt="" class="img-responsive" />
+                    <img src="/img/car-png-39071.png" alt="" class="img-responsive" />
                 </div>
             </div>
         </div>
@@ -52,7 +52,7 @@ Home Page
                     </div>
                 </div>
                 <div class="slide-image">
-                    <img src="/img/car-png-39071.png" alt="" class="img-responsive" />
+                    <img src="/img/view-3d-car.jpg" alt="" class="img-responsive" />
                 </div>
             </div>
         </div>

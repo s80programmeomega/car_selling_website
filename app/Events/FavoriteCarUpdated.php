@@ -13,7 +13,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Auth;
 
-class FavoriteCarUpdated implements ShouldBroadcast, ShouldQueue
+class FavoriteCarUpdated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -45,5 +45,10 @@ class FavoriteCarUpdated implements ShouldBroadcast, ShouldQueue
             'car_id' => $this->car->id,
             'user_id' => $this->userId,
         ];
+    }
+
+    public function broadcastQueue(): string
+    {
+        return 'cars';
     }
 }

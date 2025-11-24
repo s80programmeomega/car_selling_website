@@ -12,6 +12,7 @@
         "php": "^8.2",
         "laravel/fortify": "^1.30",
         "laravel/framework": "^12.0",
+        "laravel/horizon": "^5.40",
         "laravel/reverb": "^1.6",
         "laravel/scout": "^10.22",
         "laravel/tinker": "^2.10.1",
@@ -21,6 +22,7 @@
         "yajra/laravel-auditable": "^12"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.16",
         "fakerphp/faker": "^1.23",
         "laravel/boost": "^1.7",
         "laravel/pail": "^1.2.2",

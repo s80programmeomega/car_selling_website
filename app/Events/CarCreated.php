@@ -12,7 +12,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class CarCreated implements ShouldBroadcast, ShouldQueue
+class CarCreated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -50,5 +50,10 @@ class CarCreated implements ShouldBroadcast, ShouldQueue
             'car_id' => $this->car->id,
             'timestamp' => now(),
         ];
+    }
+
+    public function broadcastQueue(): string
+    {
+        return 'cars';
     }
 }
