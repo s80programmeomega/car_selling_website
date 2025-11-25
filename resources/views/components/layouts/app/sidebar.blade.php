@@ -54,6 +54,10 @@
                     <flux:navlist.item icon="star" :href="route('admin.reviews')"
                         :current="request()->routeIs('admin.reviews')" wire:navigate>{{ __('Reviews') }}
                     </flux:navlist.item>
+                    <flux:navlist.item icon="chat-bubble-left-right" :href="route('admin.contact-messages')"
+                        :current="request()->routeIs('admin.contact-messages')" wire:navigate>{{ __('Contact Messages') }}
+                    </flux:navlist.item>
+
                 </flux:navlist.group>
             </flux:navlist>
 

@@ -34,5 +34,27 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'contact_form' => [
+        'rate_limit_enabled' => env('CONTACT_FORM_RATE_LIMIT_ENABLED', true),
+        'ip' => [
+            'tier1' => [
+                'limit' => env('CONTACT_FORM_IP_LIMIT_1', 3),
+                'decay_minutes' => env('CONTACT_FORM_IP_DECAY_1', 10),
+            ],
+            'tier2' => [
+                'limit' => env('CONTACT_FORM_IP_LIMIT_2', 5),
+                'decay_minutes' => env('CONTACT_FORM_IP_DECAY_2', 60),
+            ],
+            'tier3' => [
+                'limit' => env('CONTACT_FORM_IP_LIMIT_3', 10),
+                'decay_minutes' => env('CONTACT_FORM_IP_DECAY_3', 1440),
+            ],
+        ],
+        'email' => [
+            'limit' => env('CONTACT_FORM_EMAIL_LIMIT', 3),
+            'decay_minutes' => env('CONTACT_FORM_EMAIL_DECAY', 60),
+        ],
+    ],
+
 
 ];

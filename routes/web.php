@@ -5,6 +5,7 @@ use App\Livewire\Admin\CarInquiries;
 use App\Livewire\Admin\CarModels;
 use App\Livewire\Admin\CarTypes;
 use App\Livewire\Admin\Cities;
+use App\Livewire\Admin\ContactMessages;
 use App\Livewire\Admin\Features as AdminFeatures;
 use App\Livewire\Admin\FuelTypes;
 use App\Livewire\Admin\Makers;
@@ -73,6 +74,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/features', AdminFeatures::class)->name('features');
     Route::get('/inquiries', CarInquiries::class)->name('inquiries');
     Route::get('/reviews', Reviews::class)->name('reviews');
+    Route::get('/contact-messages', ContactMessages::class)->name('contact-messages');
 });
 
 // Route::get('/my-cars', MyCars::class)->middleware('auth')->name('my-cars');
@@ -91,5 +93,7 @@ Route::get('/car/{car}/inquiry', function (Car $car) {
 })->name('car.inquiry');
 
 Route::view('/contact', 'car_template.contact')->name('contact');
+
+
 
 
