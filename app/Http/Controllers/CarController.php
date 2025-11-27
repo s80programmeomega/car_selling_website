@@ -8,19 +8,26 @@ use App\Http\Requests\UpdateCarRequest;
 use App\Models\Car;
 use App\Models\Feature;
 use Barryvdh\Debugbar\Facades\Debugbar;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class CarController extends Controller
 {
+
+    use AuthorizesRequests, ValidatesRequests;
+
     /**
      * Search for cars based on various filters.
      */
     public function search(Request $request)
     {
+        $this->authorize('viewAny', Car::class);
         // $cars = Car::published()
         //     ->when($request->maker_id, fn($q) => $q->where('maker_id', $request->maker_id))
         //     ->when($request->model_id, fn($q) => $q->where('model_id', $request->model_id))
@@ -62,6 +69,8 @@ class CarController extends Controller
         //     ->paginate(9);
         // $latest_cars->withRelationshipAutoloading();
 
+        Gate::authorize('viewAny', Car::class);
+
         Debugbar::info('Info!');
         Debugbar::error('Error!');
         Debugbar::warning('Watch out…');
@@ -77,6 +86,7 @@ class CarController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Car::class);
         return view('car_template.add_new_car');
     }
 
@@ -93,8 +103,10 @@ class CarController extends Controller
      */
     public function show(Car $car)
     {
+        $this->authorize('view', $car);
         // Load all relationships
         // $car->load(['maker', 'model', 'carType', 'fuelType', 'state', 'city', 'images', 'features', 'owner']);
+
 
         // Get all features with car's features marked
         $allFeatures = Feature::all();
@@ -111,6 +123,7 @@ class CarController extends Controller
      */
     public function edit(Car $car)
     {
+        $this->authorize('update', $car);
         return view('car_template.edit_car', compact('car'));
     }
 
@@ -127,6 +140,7 @@ class CarController extends Controller
      */
     public function destroy(Car $car)
     {
+        $this->authorize('delete', $car);
         try {
             DB::beginTransaction();
 
