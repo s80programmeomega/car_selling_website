@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\NewsletterSubscriber;
 use App\Models\Subscription;
+use App\Notifications\NewsletterEmail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 
 class SubscriptionController extends Controller
 {

@@ -33,9 +33,15 @@ class QuickNewsletterSubscribe extends Component
             ->first();
 
         if ($subscription) {
-            $subscription->is_active ? $subscription->unsubscribe() : $subscription->resubscribe();
-            $this->isSubscribed = $subscription->is_active;
-            $this->message = $subscription->is_active ? 'Subscribed!' : 'Unsubscribed';
+            if ($subscription->is_active) {
+                $subscription->delete();
+                $this->isSubscribed = false;
+                $this->message = 'Unsubscribed';
+            } else {
+                $subscription->update(['is_active' => true]);
+                $this->isSubscribed = true;
+                $this->message = 'Subscribed!';
+            }
         } else {
             Subscription::create([
                 'user_id' => Auth::id(),
