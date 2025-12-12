@@ -12,6 +12,19 @@ class ContactMessages extends Component
 
     public $search = '';
     public $filter = 'all';
+    public $viewingMessage = null;
+
+    public function view($id)
+    {
+        $this->viewingMessage = ContactMessage::findOrFail($id);
+        $this->markAsRead($id);
+    }
+
+    public function closeView()
+    {
+        $this->viewingMessage = null;
+    }
+
 
     public function markAsRead($id)
     {

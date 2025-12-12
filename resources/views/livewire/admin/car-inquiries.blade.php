@@ -88,6 +88,9 @@
                     <td class="px-4 py-2">{{ Str::limit($inquiry->message, 50) }}</td>
                     <td class="px-4 py-2">{{ $inquiry->created_at->format('M d, Y') }}</td>
                     <td class="px-4 py-2">
+                        <button wire:click="view({{ $inquiry->id }})"
+                            class="text-green-500 hover:underline mr-2">View</button>
+
                         @if(!$inquiry->is_read)
                         <button wire:click="markAsRead({{ $inquiry->id }})"
                             class="text-blue-500 hover:underline mr-2">Mark Read</button>
@@ -105,4 +108,27 @@
     </div>
 
     <div class="mt-4">{{ $inquiries->links() }}</div>
+
+    {{-- modal to view inquiry --}}
+    @if($viewingInquiry)
+    <div class="fixed inset-0 flex items-center justify-center z-50" style="background-color: rgba(0, 0, 0, 0.5);" wire:click="closeView">
+        <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4" wire:click.stop>
+            <h3 class="text-xl font-bold mb-4">Inquiry Details</h3>
+            <div class="space-y-3">
+                <div><strong>Car:</strong> {{ $viewingInquiry->car->year }} {{ $viewingInquiry->car->maker->name }} {{
+                    $viewingInquiry->car->model->name }}</div>
+                <div><strong>From:</strong> {{ $viewingInquiry->name }}</div>
+                <div><strong>Email:</strong> {{ $viewingInquiry->email }}</div>
+                @if($viewingInquiry->phone)
+                <div><strong>Phone:</strong> {{ $viewingInquiry->phone }}</div>
+                @endif
+                <div><strong>Message:</strong><br>{{ $viewingInquiry->message }}</div>
+                <div><strong>Date:</strong> {{ $viewingInquiry->created_at->format('M d, Y h:i A') }}</div>
+            </div>
+            <button wire:click="closeView"
+                class="mt-4 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Close</button>
+        </div>
+    </div>
+    @endif
+
 </div>

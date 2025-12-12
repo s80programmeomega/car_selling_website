@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\CarController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\SubscriptionController;
 use App\Livewire\Admin\CarInquiries;
 use App\Livewire\Admin\CarModels;
 use App\Livewire\Admin\CarTypes;
@@ -16,6 +18,8 @@ use App\Livewire\Car\MyFavorites;
 use App\Livewire\Car\OldSearchCars;
 use App\Livewire\Car\SearchCars;
 use App\Livewire\Settings\Appearance;
+use App\Livewire\Settings\Car\ManageSubscriptions;
+use App\Livewire\Settings\Car\NotificationPreferences;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\TwoFactor;
@@ -83,7 +87,7 @@ Route::view('/my-cars', 'car_template.my_cars')->middleware('auth')->name('my-ca
 
 
 
-// Add to car detail page routes
+// Car detail page routes
 Route::get('/car/{car}/reviews', function (Car $car) {
     return view('car_template.car_reviews', compact('car'));
 })->name('car.reviews');
@@ -93,6 +97,22 @@ Route::get('/car/{car}/inquiry', function (Car $car) {
 })->name('car.inquiry');
 
 Route::view('/contact', 'car_template.contact')->name('contact');
+
+// Notification routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/admin/notifications/{id}', [NotificationController::class, 'show'])->name('notifications.show');
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
+    Route::post('/notifications/delete-multiple', [NotificationController::class, 'destroyMultiple'])->name('notifications.destroyMultiple');
+
+    // Settings routes
+    Route::get('/admin/settings/notifications', NotificationPreferences::class)->name('settings.notifications');
+    Route::get('/admin/settings/subscriptions', ManageSubscriptions::class)->name('settings.subscriptions');
+});
+
+Route::get('/subscriptions/unsubscribe/{token}', [SubscriptionController::class, 'unsubscribe'])
+    ->name('subscriptions.unsubscribe');
 
 
 

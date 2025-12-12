@@ -15,6 +15,15 @@ class User extends Authenticatable
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
 
     /**
+     * The channels the user receives notification broadcasts on.
+     */
+    public function receivesBroadcastNotificationsOn(): string
+    {
+        // Option 1: Simple custom name
+        return 'user.' . $this->id;
+    }
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
@@ -31,9 +40,15 @@ class User extends Authenticatable
         'role',
         'is_dealer',
         'company_name',
-        'address'
+        'address',
+        'notify_inquiry_received',
+        'notify_inquiry_response',
+        'notify_favorite_update',
+        'notify_review_received',
+        'notify_car_sold',
+        'notify_in_app',
+        'receive_email_digest',
     ];
-
 
     /**
      * The attributes that should be hidden for serialization.
@@ -60,7 +75,6 @@ class User extends Authenticatable
             'is_dealer' => 'boolean',
         ];
     }
-
 
     // Accessor
     public function getNameAttribute(): string
@@ -106,4 +120,39 @@ class User extends Authenticatable
         return $this->hasMany(Review::class, 'seller_id');
     }
 
+    /**
+     * Relationship: User subscriptions
+     */
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    /**
+     * Check if user has active subscription of a type
+     */
+    public function hasActiveSubscription(string $type): bool
+    {
+        return $this
+            ->subscriptions()
+            ->where('type', $type)
+            ->where('is_active', true)
+            ->exists();
+    }
+
+    /**
+     * Get user's notification preferences as array
+     */
+    public function getNotificationPreferences(): array
+    {
+        return [
+            'inquiry_received' => $this->notify_inquiry_received,
+            'inquiry_response' => $this->notify_inquiry_response,
+            'favorite_update' => $this->notify_favorite_update,
+            'review_received' => $this->notify_review_received,
+            'car_sold' => $this->notify_car_sold,
+            'in_app' => $this->notify_in_app,
+            'email_digest' => $this->receive_email_digest,
+        ];
+    }
 }

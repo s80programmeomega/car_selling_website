@@ -6,7 +6,8 @@
 
         <!-- Desktop Navigation -->
         <nav class="navbar-nav-links">
-            <a href="{{ route('car.index') }}" class="navbar-nav-link {{ request()->routeIs('car.index') ? 'active' : '' }}">
+            <a href="{{ route('car.index') }}"
+                class="navbar-nav-link {{ request()->routeIs('car.index') ? 'active' : '' }}">
                 <i class="fas fa-home"></i>
                 <span>Home</span>
             </a>
@@ -27,11 +28,13 @@
                 </ul>
             </div>
 
-            <a href="{{ route('car.search') }}" class="navbar-nav-link {{ request()->routeIs('car.search') ? 'active' : '' }}">
+            <a href="{{ route('car.search') }}"
+                class="navbar-nav-link {{ request()->routeIs('car.search') ? 'active' : '' }}">
                 <i class="fas fa-search"></i>
                 <span>Search</span>
             </a>
-            <a href="{{ route('contact') }}" class="navbar-nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">
+            <a href="{{ route('contact') }}"
+                class="navbar-nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">
                 <i class="fas fa-envelope"></i>
                 <span>Contact</span>
             </a>
@@ -47,21 +50,28 @@
         <div class="navbar-auth">
             <!-- Mobile Navigation Links (for both auth and guest) -->
             <div class="mobile-nav-links">
-                <a href="{{ route('car.index') }}" class="mobile-nav-link {{ request()->routeIs('car.index') ? 'active' : '' }}">
+                <a href="{{ route('car.index') }}"
+                    class="mobile-nav-link {{ request()->routeIs('car.index') ? 'active' : '' }}">
                     <i class="fas fa-home"></i> Home
                 </a>
-                <a href="{{ route('car.search') }}" class="mobile-nav-link {{ request()->routeIs('car.search') ? 'active' : '' }}">
+                <a href="{{ route('car.search') }}"
+                    class="mobile-nav-link {{ request()->routeIs('car.search') ? 'active' : '' }}">
                     <i class="fas fa-search"></i> Search
                 </a>
-                <a href="{{ route('contact') }}" class="mobile-nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">
+                <a href="{{ route('contact') }}"
+                    class="mobile-nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">
                     <i class="fas fa-envelope"></i> Contact
                 </a>
                 <hr style="margin: 1rem 0; border-color: #e0e0e0;">
             </div>
 
             @auth
+
             <!-- Favorites with Counter -->
             @livewire('car.favorites-counter')
+
+            <!-- Notification Bell -->
+            <livewire:notification-bell />
 
             <a href="{{ route('car.create') }}" class="btn btn-add-new-car">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -82,6 +92,9 @@
                 <ul class="submenu">
                     <li><a href="{{ route('my-cars') }}">My Cars</a></li>
                     <li><a href="{{ route('favorites') }}">My Favorites</a></li>
+                    <hr>
+                    <li><a href="{{ route('profile.edit') }}">Settings</a></li>
+                    <hr>
                     <li>
                         <form action="{{ route('logout') }}" method="post">
                             @csrf
@@ -116,187 +129,187 @@
 </header>
 
 <style>
-/* ===== DESKTOP NAVIGATION ===== */
-.navbar-nav-links {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-    margin-left: 1rem;
-}
-
-.navbar-nav-links .navbar-nav-link {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    color: var(--navbar-link-color);
-    white-space: nowrap;
-    font-size: 14px;
-}
-
-/* Hover effect - white text on primary background */
-.navbar-nav-links .navbar-nav-link:hover {
-    color: white !important;
-    background-color: var(--primary-color) !important;
-}
-
-.navbar-nav-links .navbar-nav-link:hover i {
-    color: white;
-}
-
-/* Active page indicator - white text on primary background */
-.navbar-nav-links .navbar-nav-link.active {
-    color: white !important;
-    background-color: var(--primary-color) !important;
-}
-
-.navbar-nav-links .navbar-nav-link.active i {
-    color: white;
-}
-
-/* ===== BROWSE DROPDOWN ===== */
-.navbar-browse-menu {
-    position: relative;
-}
-
-.navbar-browse-menu .submenu {
-    min-width: 180px;
-}
-
-/* ===== FAVORITES BUTTON ===== */
-.btn-favorites {
-    position: relative;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    color: var(--primary-color);
-    text-decoration: none;
-    transition: all 0.3s;
-}
-
-.btn-favorites:hover {
-    background-color: rgba(233, 88, 12, 0.1);
-}
-
-.favorites-badge {
-    position: absolute;
-    top: -4px;
-    right: -4px;
-    background-color: #e11d48;
-    color: white;
-    font-size: 11px;
-    font-weight: bold;
-    padding: 2px 6px;
-    border-radius: 10px;
-    min-width: 18px;
-    text-align: center;
-}
-
-/* ===== MOBILE NAVIGATION ===== */
-.mobile-nav-links {
-    display: none;
-    flex-direction: column;
-    width: 100%;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-}
-
-.mobile-nav-link {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
-    text-decoration: none;
-    color: var(--navbar-link-color);
-    transition: all 0.3s;
-    font-size: 15px;
-}
-
-.mobile-nav-link:hover {
-    background-color: rgba(233, 88, 12, 0.1);
-    color: var(--primary-color);
-}
-
-/* Active state for mobile - white text on primary background */
-.mobile-nav-link.active {
-    background-color: var(--primary-color) !important;
-    color: white !important;
-}
-
-.mobile-nav-link.active i {
-    color: white !important;
-}
-
-/* ===== RESPONSIVE BREAKPOINTS ===== */
-
-/* Tablet: Hide text on smaller buttons, reduce gaps */
-@media screen and (max-width: 992px) {
+    /* ===== DESKTOP NAVIGATION ===== */
     .navbar-nav-links {
-        gap: 0.25rem;
-    }
-
-    .navbar-nav-links .navbar-nav-link {
-        padding: 0.5rem 0.75rem;
-        font-size: 13px;
-    }
-
-    .btn-add-new-car .btn-text {
-        display: none;
-    }
-
-    .btn-add-new-car {
-        padding: 0.5rem;
-        min-width: auto;
-    }
-}
-
-/* Small tablet: Further reduce navigation */
-@media screen and (max-width: 768px) {
-    .navbar-nav-links .navbar-nav-link span {
-        display: none;
-    }
-
-    .navbar-nav-links .navbar-nav-link {
-        padding: 0.5rem;
-        width: 36px;
-        height: 36px;
-        justify-content: center;
-    }
-
-    .navbar-browse-menu .navbar-nav-link .fa-chevron-down {
-        display: none;
-    }
-}
-
-/* Mobile: Show mobile menu, hide desktop nav */
-@media screen and (max-width: 680px) {
-    .navbar-nav-links {
-        display: none;
-    }
-
-    .mobile-nav-links {
         display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        margin-left: 1rem;
     }
 
+    .navbar-nav-links .navbar-nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: var(--navbar-link-color);
+        white-space: nowrap;
+        font-size: 14px;
+    }
+
+    /* Hover effect - white text on primary background */
+    .navbar-nav-links .navbar-nav-link:hover {
+        color: white !important;
+        background-color: var(--primary-color) !important;
+    }
+
+    .navbar-nav-links .navbar-nav-link:hover i {
+        color: white;
+    }
+
+    /* Active page indicator - white text on primary background */
+    .navbar-nav-links .navbar-nav-link.active {
+        color: white !important;
+        background-color: var(--primary-color) !important;
+    }
+
+    .navbar-nav-links .navbar-nav-link.active i {
+        color: white;
+    }
+
+    /* ===== BROWSE DROPDOWN ===== */
+    .navbar-browse-menu {
+        position: relative;
+    }
+
+    .navbar-browse-menu .submenu {
+        min-width: 180px;
+    }
+
+    /* ===== FAVORITES BUTTON ===== */
     .btn-favorites {
-        order: -1;
-    }
-
-    .btn-add-new-car {
-        width: 100%;
+        position: relative;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
         justify-content: center;
-        margin-bottom: 0.5rem;
+        border-radius: 50%;
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: all 0.3s;
     }
 
-    .btn-add-new-car .btn-text {
-        display: inline;
+    .btn-favorites:hover {
+        background-color: rgba(233, 88, 12, 0.1);
     }
-}
+
+    .favorites-badge {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        background-color: #e11d48;
+        color: white;
+        font-size: 11px;
+        font-weight: bold;
+        padding: 2px 6px;
+        border-radius: 10px;
+        min-width: 18px;
+        text-align: center;
+    }
+
+    /* ===== MOBILE NAVIGATION ===== */
+    .mobile-nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .mobile-nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        color: var(--navbar-link-color);
+        transition: all 0.3s;
+        font-size: 15px;
+    }
+
+    .mobile-nav-link:hover {
+        background-color: rgba(233, 88, 12, 0.1);
+        color: var(--primary-color);
+    }
+
+    /* Active state for mobile - white text on primary background */
+    .mobile-nav-link.active {
+        background-color: var(--primary-color) !important;
+        color: white !important;
+    }
+
+    .mobile-nav-link.active i {
+        color: white !important;
+    }
+
+    /* ===== RESPONSIVE BREAKPOINTS ===== */
+
+    /* Tablet: Hide text on smaller buttons, reduce gaps */
+    @media screen and (max-width: 992px) {
+        .navbar-nav-links {
+            gap: 0.25rem;
+        }
+
+        .navbar-nav-links .navbar-nav-link {
+            padding: 0.5rem 0.75rem;
+            font-size: 13px;
+        }
+
+        .btn-add-new-car .btn-text {
+            display: none;
+        }
+
+        .btn-add-new-car {
+            padding: 0.5rem;
+            min-width: auto;
+        }
+    }
+
+    /* Small tablet: Further reduce navigation */
+    @media screen and (max-width: 768px) {
+        .navbar-nav-links .navbar-nav-link span {
+            display: none;
+        }
+
+        .navbar-nav-links .navbar-nav-link {
+            padding: 0.5rem;
+            width: 36px;
+            height: 36px;
+            justify-content: center;
+        }
+
+        .navbar-browse-menu .navbar-nav-link .fa-chevron-down {
+            display: none;
+        }
+    }
+
+    /* Mobile: Show mobile menu, hide desktop nav */
+    @media screen and (max-width: 680px) {
+        .navbar-nav-links {
+            display: none;
+        }
+
+        .mobile-nav-links {
+            display: flex;
+        }
+
+        .btn-favorites {
+            order: -1;
+        }
+
+        .btn-add-new-car {
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-add-new-car .btn-text {
+            display: inline;
+        }
+    }
 </style>

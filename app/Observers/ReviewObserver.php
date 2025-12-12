@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Events\CarDataChanged;
 use App\Models\Review;
+use App\Notifications\ReviewReceived;
 
 class ReviewObserver
 {
@@ -11,6 +12,10 @@ class ReviewObserver
     {
         if ($review->car) {
             event(new CarDataChanged($review->car));
+        }
+        // Notify seller about new review
+        if ($review->seller) {
+            $review->seller->notify(new ReviewReceived($review));
         }
     }
 

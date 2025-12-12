@@ -21,4 +21,10 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
-typesense-server-29.0-amd64.deb
+
+# custom
+.amazonq
+.cursor
+.github
+.qodo
+.vscode

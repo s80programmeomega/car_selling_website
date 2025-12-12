@@ -34,15 +34,27 @@
                     <li><a href="#">Privacy Policy</a></li>
                 </ul>
             </div>
-
             <div class="footer-section">
+                <h3 class="footer-title">Stay Connected</h3>
+                <p class="footer-newsletter-text">Get the latest deals and updates delivered to your inbox.</p>
+
+                @auth
+                    {{-- Quick subscribe for logged-in users --}}
+                    <livewire:car.quick-newsletter-subscribe />
+                @else
+                    {{-- Email form for guests --}}
+                    <livewire:car.newsletter-subscription />
+                @endauth
+            </div>
+
+            {{-- <div class="footer-section">
                 <h3 class="footer-title">Stay Connected</h3>
                 <p class="footer-newsletter-text">Get the latest deals and updates delivered to your inbox.</p>
                 <form class="footer-newsletter">
                     <input type="email" placeholder="Your email address" class="footer-input" />
                     <button type="submit" class="btn btn-primary">Subscribe</button>
                 </form>
-            </div>
+            </div> --}}
         </div>
 
         <div class="footer-bottom">

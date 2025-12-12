@@ -96,6 +96,9 @@
                     <td class="px-4 py-2">{{ Str::limit($review->comment, 50) }}</td>
                     <td class="px-4 py-2">{{ $review->created_at->format('M d, Y') }}</td>
                     <td class="px-4 py-2">
+                        <button wire:click="view({{ $review->id }})"
+                            class="text-green-500 hover:underline mr-2">View</button>
+
                         <button wire:click="delete({{ $review->id }})" onclick="return confirm('Are you sure?')"
                             class="text-red-500 hover:underline">Delete</button>
                     </td>
@@ -106,4 +109,27 @@
     </div>
 
     <div class="mt-4">{{ $reviews->links() }}</div>
+
+    @if($viewingReview)
+    <div class="fixed inset-0 flex items-center justify-center z-50" style="background-color: rgba(0, 0, 0, 0.5);" wire:click="closeView">
+        <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4" wire:click.stop>
+            <h3 class="text-xl font-bold mb-4">Review Details</h3>
+            <div class="space-y-3">
+                <div><strong>Reviewer:</strong> {{ $viewingReview->reviewer->username }}</div>
+                <div><strong>Seller:</strong> {{ $viewingReview->seller->name }}</div>
+                @if($viewingReview->car)
+                <div><strong>Car:</strong> {{ $viewingReview->car->maker->name }} {{ $viewingReview->car->model->name }}
+                </div>
+                @endif
+                <div><strong>Rating:</strong> <span class="text-yellow-400">@for($i = 1; $i <= 5; $i++){{ $i
+                            <=$viewingReview->rating ? '★' : '☆' }}@endfor</span></div>
+                <div><strong>Comment:</strong><br>{{ $viewingReview->comment }}</div>
+                <div><strong>Date:</strong> {{ $viewingReview->created_at->format('M d, Y h:i A') }}</div>
+            </div>
+            <button wire:click="closeView"
+                class="mt-4 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Close</button>
+        </div>
+    </div>
+    @endif
+
 </div>

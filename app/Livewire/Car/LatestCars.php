@@ -36,7 +36,7 @@ class LatestCars extends Component
             return Car::published()
                 ->with(['maker', 'model', 'carType', 'fuelType', 'city', 'images'])
                 ->latest()
-                ->paginate(9, ['*'], 'page', $this->getPage());
+                ->paginate(10, ['*'], 'page', $this->getPage());
         });
 
         return view('livewire.car.latest-cars', compact('latest_cars'));

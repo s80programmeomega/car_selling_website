@@ -12,6 +12,19 @@ class CarInquiries extends Component
 
     public $search = '';
     public $filter = 'all'; // all, unread, read
+    public $viewingInquiry = null;
+
+    public function view($id)
+    {
+        $this->viewingInquiry = CarInquiry::with(['car.maker', 'car.model'])->findOrFail($id);
+        $this->markAsRead($id);
+    }
+
+    public function closeView()
+    {
+        $this->viewingInquiry = null;
+    }
+
 
     public function markAsRead($id)
     {

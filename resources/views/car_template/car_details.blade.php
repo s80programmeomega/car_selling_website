@@ -8,18 +8,22 @@
     <div class="car-details-region">{{ $car->city->name }}, {{ $car->state->name }} - {{
         $car->created_at->diffForHumans() }}</div>
 
-    @auth
     <div class="flex gap-1 my-medium">
-        <a href="{{ route('car.edit', $car) }}" class="btn btn-primary">Edit Car</a>
-        <a href="{{ route('car.images', $car) }}" class="btn btn-default">Manage Images</a>
-        <form action="{{ route('car.destroy', $car) }}" method="POST"
-            onsubmit="return confirm('Are you sure you want to delete this car?');" style="display: inline;">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="btn btn-danger">Delete Car</button>
-        </form>
+        @can('update', $car)
+            <a href="{{ route('car.edit', $car) }}" class="btn btn-primary">Edit Car</a>
+            <a href="{{ route('car.images', $car) }}" class="btn btn-default">Manage Images</a>
+        @endcan
+
+        @can('delete', $car)
+            <form action="{{ route('car.destroy', $car) }}" method="POST"
+                onsubmit="return confirm('Are you sure you want to delete this car?');" style="display: inline;">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger">Delete Car</button>
+            </form>
+        @endcan
     </div>
-    @endauth
+
     <div class="car-details-content">
 
         <div class="car-images-and-description">
@@ -59,53 +63,56 @@
             <div class="card car-detailed-description">
                 <h2 class="car-details-title">Customer Reviews</h2>
                 @php
-                    $reviews = $car->reviews()->with('reviewer')->latest()->limit(5)->get();
-                    $averageRating = $car->reviews()->avg('rating');
-                    $totalReviews = $car->reviews()->count();
+                $reviews = $car->reviews()->with('reviewer')->latest()->limit(5)->get();
+                $averageRating = $car->reviews()->avg('rating');
+                $totalReviews = $car->reviews()->count();
                 @endphp
 
                 @if($totalReviews > 0)
-                    <div style="margin-bottom: 1rem;">
-                        <span style="font-size: 2rem; font-weight: bold;">{{ number_format($averageRating, 1) }}</span>
-                        <span style="color: #fbbf24; font-size: 1.5rem;">
-                            @for($i = 1; $i <= 5; $i++)
-                                {{ $i <= round($averageRating) ? '★' : '☆' }}
-                            @endfor
-                        </span>
-                        <span style="color: #6b7280;">({{ $totalReviews }} {{ Str::plural('review', $totalReviews) }})</span>
-                    </div>
-                    <hr>
+                <div style="margin-bottom: 1rem;">
+                    <span style="font-size: 2rem; font-weight: bold;">{{ number_format($averageRating, 1) }}</span>
+                    <span style="color: #fbbf24; font-size: 1.5rem;">
+                        @for($i = 1; $i <= 5; $i++) {{ $i <=round($averageRating) ? '★' : '☆' }} @endfor </span>
+                            <span style="color: #6b7280;">({{ $totalReviews }} {{ Str::plural('review', $totalReviews)
+                                }})</span>
+                </div>
+                <hr>
 
-                    @foreach($reviews as $review)
-                        <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 1rem; margin-bottom: 1rem;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                <div>
-                                    <strong>{{ $review->reviewer->username ?? $review->reviewer->username ?? 'Anonymous' }}</strong>
-                                    <span style="color: #fbbf24; margin-left: 0.5rem;">
-                                        @for($i = 1; $i <= 5; $i++)
-                                            {{ $i <= $review->rating ? '★' : '☆' }}
-                                        @endfor
-                                    </span>
-                                </div>
-                                <span style="font-size: 0.875rem; color: #6b7280;">{{ $review->created_at->diffForHumans() }}</span>
-                            </div>
-                            @if($review->comment)
-                                <p style="color: #374151;">{{ $review->comment }}</p>
-                            @endif
+                @foreach($reviews as $review)
+                <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 1rem; margin-bottom: 1rem;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <div>
+                            <strong>{{ $review->reviewer->username ?? $review->reviewer->username ?? 'Anonymous'
+                                }}</strong>
+                            <span style="color: #fbbf24; margin-left: 0.5rem;">
+                                @for($i = 1; $i <= 5; $i++) {{ $i <=$review->rating ? '★' : '☆' }}
+                                    @endfor
+                            </span>
                         </div>
-                    @endforeach
-
-                    @if($totalReviews > 5)
-                        <a href="{{ route('car.reviews', $car) }}" class="btn btn-default" style="margin-top: 1rem;">View All Reviews</a>
+                        <span style="font-size: 0.875rem; color: #6b7280;">{{ $review->created_at->diffForHumans()
+                            }}</span>
+                    </div>
+                    @if($review->comment)
+                    <p style="color: #374151;">{{ $review->comment }}</p>
                     @endif
+                </div>
+                @endforeach
+
+                @if($totalReviews > 5)
+                <a href="{{ route('car.reviews', $car) }}" class="btn btn-default" style="margin-top: 1rem;">View All
+                    Reviews</a>
+                @endif
                 @else
-                    <p style="color: #6b7280;">No reviews yet. Be the first to review this car!</p>
+                <p style="color: #6b7280;">No reviews yet. Be the first to review this car!</p>
                 @endif
 
                 @auth
-                    <a href="{{ route('car.reviews', $car) }}" class="btn btn-primary" style="margin-top: 1rem;">Write a Review</a>
+                <a href="{{ route('car.reviews', $car) }}" class="btn btn-primary" style="margin-top: 1rem;">Write a
+                    Review</a>
                 @else
-                    <a href="{{ route('login') }}" class="btn btn-primary" style="margin-top: 1rem;">Login to Write a Review</a>
+                <a href="{{ route('login') }}" class="btn btn-primary" style="margin-top: 1rem;">Login to Write a
+                    Review</a>
                 @endauth
             </div>
 

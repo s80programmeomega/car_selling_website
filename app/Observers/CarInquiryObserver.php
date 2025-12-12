@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Events\CarDataChanged;
 use App\Models\CarInquiry;
+use App\Notifications\CarInquiryReceived;
 
 class CarInquiryObserver
 {
@@ -11,6 +12,8 @@ class CarInquiryObserver
     {
         if ($carInquiry->car) {
             event(new CarDataChanged($carInquiry->car));
+            // Notify car owner about new inquiry
+            $carInquiry->car->owner->notify(new CarInquiryReceived($carInquiry, $carInquiry->car));
         }
     }
 

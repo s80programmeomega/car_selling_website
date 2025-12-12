@@ -12,6 +12,18 @@ class Reviews extends Component
 
     public $search = '';
     public $filterRating = '';
+    public $viewingReview = null;
+
+    public function view($id)
+    {
+        $this->viewingReview = Review::with(['reviewer', 'seller', 'car.maker', 'car.model'])->findOrFail($id);
+    }
+
+    public function closeView()
+    {
+        $this->viewingReview = null;
+    }
+
 
     public function delete($id)
     {
