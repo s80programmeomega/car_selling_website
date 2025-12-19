@@ -54,7 +54,7 @@
                         {{-- Search Input --}}
                         <div class="form-group">
                             <label class="mb-medium">Search</label>
-                            <input type="text" wire:model.live.debounce.300ms="search"
+                            <input type="text" wire:model.live.debounce.1000ms="search"
                                 placeholder="Search by maker, model, color..." />
                         </div>
 
@@ -253,35 +253,7 @@
             {{-- Car Items Grid --}}
             <div class="car-items-listing" wire:loading.class="opacity-50">
                 @forelse($cars as $car)
-                <div class="car-item card" style="transition: all 0.3s;" x-data="{
-                    pendingRefresh: false,
-                    setupEcho() {
-                        if (window.Echo) {
-                            window.Echo.channel('car-updated')
-                                .listen('CarDataChanged', (e) => {
-                                    console.log('hello test before refresh!');
-                                    if (e.car_id == {{ $car->id }}) {
-                                        if (!document.hidden) {
-                                            console.log(e);
-                                            $wire.$refresh();
-                                            console.log('hello test after refresh!');
-                                            } else {
-                                                this.pendingRefresh = true;
-                                                }
-                                                }
-                                });
-                        }
-                    }
-                }"
-                x-init="
-                    setupEcho();
-                    document.addEventListener('visibilitychange', () => {
-                        if (!document.hidden && pendingRefresh) {
-                            $wire.$refresh();
-                            pendingRefresh = false;
-                        }
-                    });
-                ">
+                <div class="car-item card" wire:key="car-{{ $car->id }}" style="transition: all 0.3s;">
                     <a href="{{ route('car.show', $car) }}">
                         @if($car->images->first())
                         <img src="{{ Storage::url($car->images->first()->image_path) }}"

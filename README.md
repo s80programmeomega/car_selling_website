@@ -1,5 +1,7 @@
 # 🚗 Car Marketplace - Modern Vehicle Trading Platform
 
+**[English](README.md)** | **[Français](README.fr.md)**
+
 [![Laravel](https://img.shields.io/badge/Laravel-12.x-FF2D20?style=flat&logo=laravel)](https://laravel.com)
 [![Livewire](https://img.shields.io/badge/Livewire-3.x-4E56A6?style=flat&logo=livewire)](https://livewire.laravel.com)
 [![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4?style=flat&logo=php)](https://php.net)
